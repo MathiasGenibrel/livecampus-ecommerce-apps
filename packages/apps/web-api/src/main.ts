@@ -1,14 +1,27 @@
+import 'reflect-metadata';
 import express from 'express';
+import { AppDataSource } from './database/data-source';
 
-const host = process.env.HOST ?? 'localhost';
-const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+const bootstrap = async (): Promise<void> => {
+  try {
+    // Initialise sqlite database
+    await AppDataSource.initialize();
 
-const app = express();
+    const host = process.env.HOST ?? 'localhost';
+    const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
-app.get('/', (req, res) => {
-  res.send({ message: 'Hello API' });
-});
+    const app = express();
 
-app.listen(port, host, () => {
-  console.log(`[ ready ] http://${host}:${port}`);
-});
+    app.get('/', (req, res) => {
+      res.send({ message: 'Hello API' });
+    });
+
+    app.listen(port, host, () => {
+      console.log(`[ ready ] http://${host}:${port}`);
+    });
+  } catch (error) {
+    console.error('CRASH APP ON INIT', error);
+  }
+};
+
+bootstrap();
