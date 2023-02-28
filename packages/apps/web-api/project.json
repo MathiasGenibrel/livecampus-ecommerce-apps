@@ -15,6 +15,7 @@
         "assets": ["packages/apps/web-api/src/assets"],
         "esbuildOptions": {
           "sourcemap": true,
+          "external": ["aws-sdk", "nock", "mock-aws-s3"],
           "outExtension": {
             ".js": ".js"
           }
