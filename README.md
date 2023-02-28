@@ -7,6 +7,7 @@
 ## How to launch apps ?
 
 To launch the React application, use the following command
+
 ```bash
 nx serve apps-web-app
 
@@ -15,7 +16,12 @@ nx serve apps-web-app
 npx nx serve apps-web-api
 ```
 
+---
+
+[Join the team on Postman to know all the useful routes to the API.](https://app.getpostman.com/join-team?invite_code=19e2e26b86170310c5dc5a1431c86f73&target_code=c996b5c4c53091416502a6980a5be20d)
+
 To launch the Express application, use the following command
+
 ```bash
 nx serve apps-web-api
 
