@@ -26,7 +26,6 @@ jobs:
 
       - name: Build and test affected apps
         run: |
-          npx nx workspace-lint
           npx nx format:check
           npx nx affected --target=lint --all --parallel --max-parallel=3
           npx nx affected --target=test --all --parallel --max-parallel=3 --ci --code-coverage
