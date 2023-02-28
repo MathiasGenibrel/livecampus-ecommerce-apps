@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from './Users';
+import { OrdersStatus } from '../../types/orders.types';
 
 @Entity()
 export class Orders {
@@ -21,7 +22,7 @@ export class Orders {
   date_order: number;
 
   @Column('text')
-  status: ['Validated', 'Paid', 'Delivered', 'Cancelled'];
+  status: OrdersStatus;
 
   @OneToOne(() => Users)
   @JoinColumn()
