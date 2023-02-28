@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import express from 'express';
 import { AppDataSource } from './database/data-source';
+import { router } from './router/router';
 
 const bootstrap = async (): Promise<void> => {
   try {
@@ -11,6 +12,8 @@ const bootstrap = async (): Promise<void> => {
     const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
     const app = express();
+
+    router(app);
 
     app.get('/', (req, res) => {
       res.send({ message: 'Hello API' });
