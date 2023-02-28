@@ -1,14 +1,8 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Categories } from './Categories';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Product } from '../../types/products.types';
 
 @Entity()
-export class Products {
+export class Products implements Product {
   @PrimaryGeneratedColumn('increment', {
     unsigned: true,
   })
@@ -33,8 +27,4 @@ export class Products {
     nullable: false,
   })
   price: number;
-
-  @OneToOne(() => Categories)
-  @JoinColumn()
-  categories: string;
 }
