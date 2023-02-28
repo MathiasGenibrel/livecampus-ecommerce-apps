@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from './Users';
-import { OrdersStatus } from '../../types/orders.types';
+import { OrdersEntity, OrdersStatus } from '../../types/orders.types';
 
 @Entity()
-export class Orders {
+export class Orders implements OrdersEntity {
   @PrimaryGeneratedColumn('increment', {
     unsigned: true,
   })

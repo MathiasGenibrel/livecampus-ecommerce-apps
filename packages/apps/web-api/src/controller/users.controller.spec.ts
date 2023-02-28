@@ -1,5 +1,6 @@
 import { UsersController } from './users.controller';
 import { Request, Response } from 'express';
+import { UserCredential } from '../types/users.types';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -12,7 +13,10 @@ describe('UsersController', () => {
 
   describe('login', () => {
     it('should return a UserCredential with a 200 status code', () => {
-      const expectedResponse = { username: 'mathias', token: 'randomToken' };
+      const expectedResponse: UserCredential = {
+        username: 'mathias',
+        token: 'randomToken',
+      };
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnThis(),

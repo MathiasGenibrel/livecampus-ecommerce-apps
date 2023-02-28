@@ -1,7 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AddressEntity } from '../../types/address.types';
 
 @Entity()
-export class Address {
+export class Address implements AddressEntity {
   @PrimaryGeneratedColumn('increment', {
     unsigned: true,
   })
@@ -13,7 +14,7 @@ export class Address {
   address: string;
 
   @Column('text')
-  address2: string;
+  address2?: string;
 
   @Column('text', {
     nullable: false,

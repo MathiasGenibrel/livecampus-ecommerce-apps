@@ -1,9 +1,5 @@
 import { Response, Request } from 'express';
-
-export interface UserCredential {
-  username: string;
-  token: string;
-}
+import { UserCredential } from '../types/users.types';
 
 export class UsersController {
   /**

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { IOrders, OrdersStatus } from '../types/orders.types';
+import { Orders, OrdersStatus } from '../types/orders.types';
 
 export class OrdersController {
-  public history(req: Request, res: Response): Response<IOrders[]> {
-    const ordersHistory: IOrders[] = [
+  public history(req: Request, res: Response): Response<Orders[]> {
+    const ordersHistory: Orders[] = [
       {
         id: 1,
         date_order: 1677612786,

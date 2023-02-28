@@ -1,6 +1,6 @@
 import { OrdersController } from './orders.controller';
 import { Request, Response } from 'express';
-import { OrdersStatus } from '../types/orders.types';
+import { Orders, OrdersStatus } from '../types/orders.types';
 
 describe('OrdersController', () => {
   let controller: OrdersController;
@@ -13,7 +13,7 @@ describe('OrdersController', () => {
 
   describe('history', () => {
     it('should return a Orders list with a 200 status code', () => {
-      const expectedResponse = [
+      const expectedResponse: Orders[] = [
         {
           id: 1,
           date_order: 1677612786,

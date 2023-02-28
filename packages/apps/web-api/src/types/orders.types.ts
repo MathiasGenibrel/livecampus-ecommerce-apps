@@ -5,8 +5,15 @@ export enum OrdersStatus {
   CANCELLED = 'Cancelled',
 }
 
-export interface IOrders {
+export interface Orders {
   id: number;
   date_order: number;
   status: OrdersStatus;
+}
+
+export interface OrdersEntity extends Orders {
+  /**
+   * Corresponding to the users foreign key
+   */
+  users: number;
 }
