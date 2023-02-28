@@ -1,0 +1,82 @@
+name: Build and Deploy
+
+on:
+  workflow_dispatch:
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  OVH_SERVER_IP: ${{ secrets.OVH_SERVER_IP }}
+  OVH_SERVER_USERNAME: ${{ secrets.OVH_SERVER_USERNAME }}
+  OVH_SERVER_PASSWORD: ${{ secrets.OVH_SERVER_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and test affected apps
+        run: |
+          npx nx workspace-lint
+          npx nx format:check
+          npx nx affected --target=lint --all --parallel --max-parallel=3
+          npx nx affected --target=test --all --parallel --max-parallel=3 --ci --code-coverage
+          npx nx affected --target=build --all --parallel --max-parallel=3
+
+      # Use artifact to share build folder with others jobs
+      - name: Save built apps on Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-apps
+          path: dist/packages
+
+  deploy:
+    needs: [build]
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get Artifact
+        uses: actions/download-artifact@v3
+        with:
+          path: dist
+
+      - name: Login to Docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Build Docker images for web Application and push to registry
+        run: |
+          docker build -t ${{ env.DOCKER_USERNAME }}/web-app:latest ./dist/built-apps/ecommerce-app
+          docker push ${{ env.DOCKER_USERNAME }}/web-app:latest
+
+      - name: Build Docker images for web REST API and push to registry
+        run: |
+          docker build -t ${{ env.DOCKER_USERNAME }}/web-api:latest ./dist/built-apps/ecommerce-api
+          docker push ${{ env.DOCKER_USERNAME }}/web-api:latest
+
+      - name: Deploy to OVH server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.OVH_SERVER_IP }}
+          username: ${{ env.OVH_SERVER_USERNAME }}
+          password: ${{ env.OVH_SERVER_PASSWORD }}
+          script: |
+            docker stop app1 || true
+            docker rm app1 || true
+            docker pull ${{ env.DOCKER_USERNAME }}/app1:latest
+            docker run -d -p 3000:3000 --name app1 ${{ env.DOCKER_USERNAME }}/app1
