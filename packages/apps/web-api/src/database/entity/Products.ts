@@ -14,18 +14,24 @@ export class Products {
   })
   id: number;
 
-  @Column('varchar', {
-    length: 255,
+  @Column('text', {
+    nullable: false,
   })
   name: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: false,
+  })
   description: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: false,
+  })
   image_link: string;
 
-  @Column('int')
+  @Column('int', {
+    nullable: false,
+  })
   price: number;
 
   @OneToOne(() => Categories)

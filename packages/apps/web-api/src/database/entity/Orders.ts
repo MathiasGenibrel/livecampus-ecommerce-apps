@@ -15,13 +15,18 @@ export class Orders {
   })
   id: number;
 
-  @Column('integer')
+  @Column('integer', {
+    nullable: false,
+  })
   /**
    * Saving dates in timestamps
    */
   date_order: number;
 
-  @Column('text')
+  @Column('text', {
+    default: OrdersStatus.VALIDATED,
+    nullable: false,
+  })
   status: OrdersStatus;
 
   @OneToOne(() => Users)

@@ -7,15 +7,21 @@ export class Address {
   })
   id: number;
 
-  @Column('text')
+  @Column('text', {
+    nullable: false,
+  })
   address: string;
 
   @Column('text')
   address2: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: false,
+  })
   city: string;
 
-  @Column('integer')
+  @Column('integer', {
+    nullable: false,
+  })
   postal_code: number;
 }

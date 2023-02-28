@@ -7,6 +7,8 @@ export class Categories {
   })
   id: number;
 
-  @Column('text')
+  @Column('text', {
+    nullable: false,
+  })
   type: string;
 }
