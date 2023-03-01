@@ -5,17 +5,17 @@ import { NextFunction, Request, Response } from 'express';
  * Used to control input to correspond to current schema.
  */
 export class UsersDto {
-  private registerSchema = Joi.object({
+  private credentialSchema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(12).required(),
   });
 
-  public async register(req: Request, res: Response, next: NextFunction) {
+  public async credential(req: Request, res: Response, next: NextFunction) {
     try {
       console.log(req);
 
       // Save the data in res.locals to make them accessible in the controller.
-      res.locals.usersCredential = await this.registerSchema.validateAsync(
+      res.locals.usersCredential = await this.credentialSchema.validateAsync(
         req.body
       );
 

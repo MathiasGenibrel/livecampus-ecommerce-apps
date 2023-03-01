@@ -14,7 +14,7 @@ interface Users {
   role: UsersRoles;
 }
 
-export interface UsersCreationInput {
+export interface UsersCredentialsInput {
   email: string;
   password: string;
 }
@@ -27,8 +27,10 @@ export interface UsersEntity extends Users {
 }
 
 export interface UserCredential {
-  username: string;
-  token: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  role: string;
 }
 
 interface Repository {
@@ -39,6 +41,8 @@ export interface AbstractUsersController {
   usersRepository: Repository;
   exists: (email: string) => Promise<boolean>;
   alreadyExists: (email: string) => Promise<void>;
+  getUser: (email: string) => Promise<Users>;
+  comparePassword: (password: string, hashedPassword: string) => Promise<void>;
   login: (req: Request, res: Response) => Promise<Response<UserCredential>>;
   register: (req: Request, res: Response) => Promise<Response<void>>;
   edit: (req: Request, res: Response) => Promise<Response<void>>;

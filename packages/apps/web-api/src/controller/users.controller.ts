@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as bcrypt from 'bcryptjs';
-import { UserCredential, UsersCreationInput } from '../types/users.types';
+import * as jwt from 'jsonwebtoken';
+import { UserCredential, UsersCredentialsInput } from '../types/users.types';
 import { AppDataSource } from '../database/data-source';
 import { Users } from '../database/entity/Users';
 import { Repository } from 'typeorm';
@@ -43,6 +44,45 @@ export class UsersController {
   }
 
   /**
+   * Get user form database with his email.
+   * @param email corresponding to the user with this email.
+   * @private
+   */
+  private async getUser(email: string): Promise<Users> {
+    const userExists = this.exists(email);
+
+    if (!userExists)
+      throw new BadRequestError(
+        'Users with this email does not exists',
+        'INVALID EMAIL'
+      );
+
+    return await this.usersRepository
+      .createQueryBuilder()
+      .where({ email })
+      .getOne();
+  }
+
+  /**
+   * Check if the password is equal to the hashed password.
+   * @param password Password passed by http request.
+   * @param hashedPassword Password save in the database.
+   * @private
+   */
+  private async comparePassword(
+    password: string,
+    hashedPassword: string
+  ): Promise<void> {
+    const samePassword = await bcrypt.compare(password, hashedPassword);
+
+    if (!samePassword)
+      throw new BadRequestError(
+        'INVALID PASSWORD',
+        'User password is incorrect'
+      );
+  }
+
+  /**
    * Get user account, response with an "ok" status and return UserCredential.
    * @param req - Express Request type, body && header from the http request.
    * @param res - Express Response, used to respond to the client request.
@@ -51,12 +91,41 @@ export class UsersController {
     req: Request,
     res: Response
   ): Promise<Response<UserCredential>> {
-    const userCredential: UserCredential = {
-      username: 'mathias',
-      token: 'randomToken',
-    };
+    const usersCredential = res.locals.usersCredential as UsersCredentialsInput;
 
-    return res.status(200).json(userCredential);
+    try {
+      const user = await this.getUser(usersCredential.email);
+
+      // Check if the password is the same as the one in the database
+      await this.comparePassword(usersCredential.password, user.password);
+
+      // Generate identification token
+      const token = jwt.sign(
+        { email: user.email, role: user.role },
+        environment.signedToken
+      );
+
+      // Credential to send to the client
+      const credential: UserCredential = {
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        role: user.role,
+      };
+
+      // Set bearer token in the header, at Authorization attribut.
+      res.set('Authorization', `Bearer ${token}`);
+
+      return res.status(200).json(credential);
+    } catch (err: unknown) {
+      console.error(err);
+
+      if (err instanceof BadRequestError)
+        return res.status(err.status).json({
+          code: 'Invalid credential',
+          message: 'Email or password is incorrect',
+        });
+    }
   }
 
   /**
@@ -66,7 +135,8 @@ export class UsersController {
    */
   public async register(req: Request, res: Response): Promise<Response<void>> {
     try {
-      const usersCredential = res.locals.usersCredential as UsersCreationInput;
+      const usersCredential = res.locals
+        .usersCredential as UsersCredentialsInput;
       // Check if the users is already registered
       await this.alreadyExists(usersCredential.email);
 

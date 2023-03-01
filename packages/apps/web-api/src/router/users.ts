@@ -10,12 +10,16 @@ export const usersRouter = (app: Express) => {
 
   // Get user credential
   // TODO: Add validation pipe middleware (to control input)
-  router.post('/login', users.login);
+  router.post(
+    '/login',
+    (req, res, next) => dto.credential(req, res, next),
+    (req, res) => users.login(req, res)
+  );
 
   // Register an new user in database
   router.post(
     '/register',
-    (req, res, next) => dto.register(req, res, next),
+    (req, res, next) => dto.credential(req, res, next),
     (req, res) => users.register(req, res)
   );
 

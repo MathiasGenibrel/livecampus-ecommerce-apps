@@ -1,6 +1,10 @@
 import { UsersController } from './users.controller';
 import { Request, Response } from 'express';
-import { AbstractUsersController, UserCredential } from '../types/users.types';
+import {
+  AbstractUsersController,
+  UserCredential,
+  UsersRoles,
+} from '../types/users.types';
 
 describe('UsersController', () => {
   // Use an abstraction to test only business code
@@ -12,6 +16,17 @@ describe('UsersController', () => {
 
     // Abstract method from controller
     controller.alreadyExists = async () => {};
+    controller.getUser = async () => {
+      return {
+        id: 1,
+        email: 'mathias@gmail.com',
+        password: 'hashedPassword',
+        firstname: 'mathias',
+        lastname: 'genibrel',
+        role: UsersRoles.CUSTOMER,
+      };
+    };
+    controller.comparePassword = async () => {};
     controller.usersRepository = {
       insert: async () => {},
     };
@@ -22,14 +37,23 @@ describe('UsersController', () => {
   describe('login', () => {
     it('should return a UserCredential with a 200 status code', async () => {
       const expectedResponse: UserCredential = {
-        username: 'mathias',
-        token: 'randomToken',
+        email: 'mathias@gmail.com',
+        firstname: 'mathias',
+        lastname: 'genibrel',
+        role: UsersRoles.CUSTOMER,
       };
 
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnValue(expectedResponse),
+        set: jest.fn().mockReturnThis(),
+        locals: {
+          usersCredential: {
+            email: 'mathias@gmail.com',
+            password: 'longPassword98!',
+          },
+        },
       };
 
       const result = await controller.login(
