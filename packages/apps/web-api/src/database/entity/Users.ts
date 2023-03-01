@@ -11,7 +11,7 @@ import { UsersEntity, UsersRoles } from '../../types/users.types';
 @Entity()
 export class Users implements UsersEntity {
   @PrimaryGeneratedColumn('increment', {
-    unsigned: true,
+    unsigned: false,
   })
   id: number;
 
