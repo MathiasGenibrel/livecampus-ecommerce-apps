@@ -1,4 +1,4 @@
-import { Response, Request } from 'express';
+import { Request, Response } from 'express';
 import { UserCredential, UsersCreationInput } from '../types/users.types';
 import { AppDataSource } from '../database/data-source';
 import { Users } from '../database/entity/Users';
@@ -31,7 +31,7 @@ export class UsersController {
    * @private
    */
   private async alreadyExists(email: string): Promise<void> {
-    const userExists = this.exists(email);
+    const userExists = await this.exists(email);
 
     if (userExists)
       throw new BadRequestError(
@@ -45,7 +45,10 @@ export class UsersController {
    * @param req - Express Request type, body && header from the http request.
    * @param res - Express Response, used to respond to the client request.
    */
-  public login(req: Request, res: Response): Response<UserCredential> {
+  public async login(
+    req: Request,
+    res: Response
+  ): Promise<Response<UserCredential>> {
     const userCredential: UserCredential = {
       username: 'mathias',
       token: 'randomToken',
@@ -61,17 +64,13 @@ export class UsersController {
    */
   public async register(req: Request, res: Response): Promise<Response<void>> {
     try {
-      // TODO: Use res.locals
-      const body: UsersCreationInput = {
-        email: 'mathias.geni@gmail.com',
-        password: 'mathias98!',
-      };
-
+      const usersCredential = res.locals.usersCredential as UsersCreationInput;
+      // TODO: use bcrypt to encrypt password.
       // Check if the users is already registered
-      await this.alreadyExists(body.email);
+      await this.alreadyExists(usersCredential.email);
 
       // Insert user in database
-      await this.usersRepository.insert(body);
+      await this.usersRepository.insert(usersCredential);
 
       return res.status(201).send();
     } catch (err: unknown) {
@@ -92,7 +91,7 @@ export class UsersController {
    * @param req - Express Request type, body && header from the http request.
    * @param res - Express Response, used to respond to the client request.
    */
-  public edit(req: Request, res: Response): Response<void> {
+  public async edit(req: Request, res: Response): Promise<Response<void>> {
     return res.status(204).send();
   }
 
@@ -101,7 +100,7 @@ export class UsersController {
    * @param req - Express Request type, body && header from the http request.
    * @param res - Express Response, used to respond to the client request.
    */
-  public delete(req: Request, res: Response): Response<void> {
+  public async delete(req: Request, res: Response): Promise<Response<void>> {
     return res.status(204).send();
   }
 }

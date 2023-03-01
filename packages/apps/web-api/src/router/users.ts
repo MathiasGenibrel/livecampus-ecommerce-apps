@@ -1,7 +1,9 @@
 import { Router, Express } from 'express';
 import { UsersController } from '../controller/users.controller';
+import { UsersDto } from '../middleware/users-dto';
 
 const users = new UsersController();
+const dto = new UsersDto();
 
 export const usersRouter = (app: Express) => {
   const router = Router({ caseSensitive: false });
@@ -11,8 +13,11 @@ export const usersRouter = (app: Express) => {
   router.post('/login', users.login);
 
   // Register an new user in database
-  // TODO: Add validation pipe middleware (to control input)
-  router.post('/register', (req, res) => users.register(req, res));
+  router.post(
+    '/register',
+    (req, res, next) => dto.register(req, res, next),
+    (req, res) => users.register(req, res)
+  );
 
   // Modify user data
   // TODO: Add validation pipe middleware (to control input)
