@@ -1,34 +1,30 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Categories } from './Categories';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Product } from '../../types/products.types';
 
 @Entity()
-export class Products {
+export class Products implements Product {
   @PrimaryGeneratedColumn('increment', {
     unsigned: true,
   })
   id: number;
 
-  @Column('varchar', {
-    length: 255,
+  @Column('text', {
+    nullable: false,
   })
   name: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: false,
+  })
   description: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: false,
+  })
   image_link: string;
 
-  @Column('int')
+  @Column('int', {
+    nullable: false,
+  })
   price: number;
-
-  @OneToOne(() => Categories)
-  @JoinColumn()
-  categories: string;
 }

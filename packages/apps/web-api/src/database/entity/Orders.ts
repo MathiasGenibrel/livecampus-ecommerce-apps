@@ -6,22 +6,28 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from './Users';
+import { OrdersEntity, OrdersStatus } from '../../types/orders.types';
 
 @Entity()
-export class Orders {
+export class Orders implements OrdersEntity {
   @PrimaryGeneratedColumn('increment', {
     unsigned: true,
   })
   id: number;
 
-  @Column('integer')
+  @Column('integer', {
+    nullable: false,
+  })
   /**
    * Saving dates in timestamps
    */
   date_order: number;
 
-  @Column('text')
-  status: ['Validated', 'Paid', 'Delivered', 'Cancelled'];
+  @Column('text', {
+    default: OrdersStatus.VALIDATED,
+    nullable: false,
+  })
+  status: OrdersStatus;
 
   @OneToOne(() => Users)
   @JoinColumn()
