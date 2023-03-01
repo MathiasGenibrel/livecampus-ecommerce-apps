@@ -12,7 +12,7 @@ export const usersRouter = (app: Express) => {
 
   // Register an new user in database
   // TODO: Add validation pipe middleware (to control input)
-  router.post('/register', users.register);
+  router.post('/register', (req, res) => users.register(req, res));
 
   // Modify user data
   // TODO: Add validation pipe middleware (to control input)

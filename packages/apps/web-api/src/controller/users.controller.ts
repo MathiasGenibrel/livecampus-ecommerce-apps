@@ -1,7 +1,45 @@
 import { Response, Request } from 'express';
-import { UserCredential } from '../types/users.types';
+import { UserCredential, UsersCreationInput } from '../types/users.types';
+import { AppDataSource } from '../database/data-source';
+import { Users } from '../database/entity/Users';
+import { Repository } from 'typeorm';
+import { BadRequestError } from '../Error/BadRequestError';
 
 export class UsersController {
+  private readonly usersRepository: Repository<Users>;
+
+  constructor() {
+    this.usersRepository = AppDataSource.getRepository(Users);
+  }
+
+  /**
+   * Check if the user is in the database
+   * @param email Email corresponding to the user to be verified
+   * @private
+   */
+  private async exists(email: string): Promise<boolean> {
+    return await this.usersRepository
+      .createQueryBuilder()
+      .where({ email })
+      .getExists();
+  }
+
+  /**
+   * Check if the user is already in database,
+   * if he's on database throw a BadRequest error.
+   * @param email Email corresponding to the user to be verified
+   * @private
+   */
+  private async alreadyExists(email: string): Promise<void> {
+    const userExists = this.exists(email);
+
+    if (userExists)
+      throw new BadRequestError(
+        'The user with this email already exists',
+        'EMAIL IS NOT UNIQUE'
+      );
+  }
+
   /**
    * Get user account, response with an "ok" status and return UserCredential.
    * @param req - Express Request type, body && header from the http request.
@@ -21,8 +59,32 @@ export class UsersController {
    * @param req - Express Request type, body && header from the http request.
    * @param res - Express Response, used to respond to the client request.
    */
-  public register(req: Request, res: Response): Response<void> {
-    return res.status(201).send();
+  public async register(req: Request, res: Response): Promise<Response<void>> {
+    try {
+      // TODO: Use res.locals
+      const body: UsersCreationInput = {
+        email: 'mathias.geni@gmail.com',
+        password: 'mathias98!',
+      };
+
+      // Check if the users is already registered
+      await this.alreadyExists(body.email);
+
+      // Insert user in database
+      await this.usersRepository.insert(body);
+
+      return res.status(201).send();
+    } catch (err: unknown) {
+      console.error(err);
+
+      if (err instanceof BadRequestError)
+        return res.status(err.status).json({
+          code: err.code,
+          message: err.message,
+        });
+
+      return res.status(500).send();
+    }
   }
 
   /**
