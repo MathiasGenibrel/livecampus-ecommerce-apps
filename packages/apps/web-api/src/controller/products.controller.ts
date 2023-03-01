@@ -2,6 +2,11 @@ import { Request, Response } from 'express';
 import { Product } from '../types/products.types';
 
 export class ProductsController {
+  /**
+   * Find all products
+   * @param req - Express Request type, body && header from the http request.
+   * @param res - Express Response, used to respond to the client request.
+   */
   public find(req: Request, res: Response): Response<Product[]> {
     const products: Product[] = [
       {
@@ -16,6 +21,11 @@ export class ProductsController {
     return res.status(200).json(products);
   }
 
+  /**
+   * Find a product by his id
+   * @param req - Express Request type, body && header from the http request.
+   * @param res - Express Response, used to respond to the client request.
+   */
   public findOne(req: Request, res: Response): Response<Product> {
     const product: Product = {
       id: 1,
@@ -30,8 +40,8 @@ export class ProductsController {
 
   /**
    * Creation of a product
-   * @param req
-   * @param res
+   * @param req - Express Request type, body && header from the http request.
+   * @param res - Express Response, used to respond to the client request.
    */
   public create(req: Request, res: Response): Response<void> {
     return res.status(201).send();
@@ -39,8 +49,8 @@ export class ProductsController {
 
   /**
    * Partial or complete edit of a product.
-   * @param req
-   * @param res
+   * @param req - Express Request type, body && header from the http request.
+   * @param res - Express Response, used to respond to the client request.
    */
   public edit(req: Request, res: Response): Response<void> {
     return res.status(204).send();
@@ -48,8 +58,8 @@ export class ProductsController {
 
   /**
    * Delete a product.
-   * @param req
-   * @param res
+   * @param req - Express Request type, body && header from the http request.
+   * @param res - Express Response, used to respond to the client request.
    */
   public delete(req: Request, res: Response): Response<void> {
     return res.status(204).send();
