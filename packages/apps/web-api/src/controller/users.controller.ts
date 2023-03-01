@@ -10,7 +10,7 @@ import {
 import { AppDataSource } from '../database/data-source';
 import { Users } from '../database/entity/Users';
 import { Repository } from 'typeorm';
-import { BadRequestError } from '../Error/BadRequestError';
+import { BadRequestError } from '../error/BadRequestError';
 import { environment } from '../environment/environment';
 
 export class UsersController {

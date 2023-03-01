@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { UsersCredentialToken } from '../types/users.types';
 import { environment } from '../environment/environment';
 import { JsonWebTokenError } from 'jsonwebtoken';
-import { BadRequestError } from '../Error/BadRequestError';
+import { BadRequestError } from '../error/BadRequestError';
 
 export class Authorization {
   private getUsersCredential(authorization: string): UsersCredentialToken {
