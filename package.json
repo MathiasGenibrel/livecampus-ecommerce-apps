@@ -54,6 +54,7 @@
     "vitest": "^0.25.8"
   },
   "dependencies": {
+    "joi": "^17.8.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "6.4.3",
