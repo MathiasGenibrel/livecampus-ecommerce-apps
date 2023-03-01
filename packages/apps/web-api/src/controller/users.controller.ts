@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
+import * as bcrypt from 'bcryptjs';
 import { UserCredential, UsersCreationInput } from '../types/users.types';
 import { AppDataSource } from '../database/data-source';
 import { Users } from '../database/entity/Users';
 import { Repository } from 'typeorm';
 import { BadRequestError } from '../Error/BadRequestError';
+import { environment } from '../environment/environment';
 
 export class UsersController {
   private readonly usersRepository: Repository<Users>;
@@ -65,12 +67,19 @@ export class UsersController {
   public async register(req: Request, res: Response): Promise<Response<void>> {
     try {
       const usersCredential = res.locals.usersCredential as UsersCreationInput;
-      // TODO: use bcrypt to encrypt password.
       // Check if the users is already registered
       await this.alreadyExists(usersCredential.email);
 
+      const hashedPassword = await bcrypt.hash(
+        usersCredential.password,
+        environment.saltRound
+      );
+
       // Insert user in database
-      await this.usersRepository.insert(usersCredential);
+      await this.usersRepository.insert({
+        ...usersCredential,
+        password: hashedPassword,
+      });
 
       return res.status(201).send();
     } catch (err: unknown) {
