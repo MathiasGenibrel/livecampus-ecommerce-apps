@@ -10,12 +10,38 @@ export class UsersDto {
     password: Joi.string().min(12).required(),
   });
 
+  private usersContentSchema = Joi.object({
+    email: Joi.string().email(),
+    password: Joi.string().min(12),
+    firstname: Joi.string(),
+    lastname: Joi.string(),
+  }).min(1);
+
   public async credential(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log(req);
-
       // Save the data in res.locals to make them accessible in the controller.
       res.locals.usersCredential = await this.credentialSchema.validateAsync(
+        req.body
+      );
+
+      return next();
+    } catch (err) {
+      console.log(err);
+
+      if (err instanceof ValidationError)
+        return res.status(400).json({
+          code: err.name,
+          message: err.message,
+        });
+
+      return res.status(500).send();
+    }
+  }
+
+  public async content(req: Request, res: Response, next: NextFunction) {
+    try {
+      // Save the data in res.locals to make them accessible in the controller.
+      res.locals.usersContent = await this.usersContentSchema.validateAsync(
         req.body
       );
 

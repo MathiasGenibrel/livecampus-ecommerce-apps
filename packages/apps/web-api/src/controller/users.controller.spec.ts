@@ -29,6 +29,11 @@ describe('UsersController', () => {
     controller.comparePassword = async () => {};
     controller.usersRepository = {
       insert: async () => {},
+      createQueryBuilder: jest.fn().mockReturnThis(),
+      update: jest.fn().mockReturnThis(),
+      set: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      execute: async () => {},
     };
 
     mockReq = {};
@@ -96,6 +101,17 @@ describe('UsersController', () => {
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnValue(undefined),
+        locals: {
+          usersContent: {
+            firstname: 'mathias',
+            lastname: 'genibrel',
+          },
+          usersCredentialToken: {
+            id: 4,
+            email: 'mathias.genibrel@gmail.com',
+            role: 'customer',
+          },
+        },
       };
 
       const result = await controller.edit(

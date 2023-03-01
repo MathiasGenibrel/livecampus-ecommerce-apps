@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { UserCredential, UsersCredentialsInput } from '../types/users.types';
+import {
+  UserCredential,
+  UsersContentInput,
+  UsersCredentialsInput,
+  UsersCredentialToken,
+} from '../types/users.types';
 import { AppDataSource } from '../database/data-source';
 import { Users } from '../database/entity/Users';
 import { Repository } from 'typeorm';
@@ -101,7 +106,7 @@ export class UsersController {
 
       // Generate identification token
       const token = jwt.sign(
-        { email: user.email, role: user.role },
+        { id: user.id, email: user.email, role: user.role },
         environment.signedToken
       );
 
@@ -171,7 +176,31 @@ export class UsersController {
    * @param res - Express Response, used to respond to the client request.
    */
   public async edit(req: Request, res: Response): Promise<Response<void>> {
-    return res.status(204).send();
+    const usersContent = res.locals.usersContent as UsersContentInput;
+    const usersCredentialToken = res.locals
+      .usersCredentialToken as UsersCredentialToken;
+
+    const hashedPassword =
+      usersContent.password &&
+      (await bcrypt.hash(usersContent.password, environment.saltRound));
+
+    try {
+      await this.usersRepository
+        .createQueryBuilder()
+        .update()
+        .set({ ...usersContent, password: hashedPassword })
+        .where({
+          id: usersCredentialToken.id,
+          email: usersCredentialToken.email,
+        })
+        .execute();
+
+      return res.status(204).send();
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).send();
+    }
   }
 
   /**

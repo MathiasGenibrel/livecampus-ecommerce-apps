@@ -19,6 +19,9 @@ export interface UsersCredentialsInput {
   password: string;
 }
 
+export type UsersContentInput = Pick<Users, 'id'> &
+  Partial<Pick<Users, 'email' | 'password' | 'firstname' | 'lastname'>>;
+
 export interface UsersEntity extends Users {
   /**
    * Corresponding to the address foreign key
@@ -26,15 +29,20 @@ export interface UsersEntity extends Users {
   address: number;
 }
 
-export interface UserCredential {
-  email: string;
-  firstname: string;
-  lastname: string;
-  role: string;
-}
+export type UserCredential = Pick<
+  Users,
+  'email' | 'firstname' | 'lastname' | 'role'
+>;
+
+export type UsersCredentialToken = Pick<Users, 'id' | 'email' | 'role'>;
 
 interface Repository {
   insert: () => Promise<void>;
+  createQueryBuilder: () => Promise<void>;
+  update: () => Promise<void>;
+  set: () => Promise<void>;
+  where: () => Promise<void>;
+  execute: () => Promise<void>;
 }
 
 export interface AbstractUsersController {
