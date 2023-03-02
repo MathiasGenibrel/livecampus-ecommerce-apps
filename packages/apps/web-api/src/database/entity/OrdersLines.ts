@@ -2,26 +2,26 @@ import {
   Column,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Products } from './Products';
 import { Orders } from './Orders';
 
 @Entity()
-export class Orders_lines {
+export class OrdersLines {
   @PrimaryGeneratedColumn('increment', {
     unsigned: false,
   })
   id: number;
 
-  @OneToOne(() => Products)
-  @JoinColumn()
-  products: number;
+  @ManyToOne(() => Products, (products) => products.orders_lines)
+  @JoinColumn({ name: 'productsId' })
+  productsId: number;
 
-  @OneToOne(() => Orders)
-  @JoinColumn()
-  orders: number;
+  @ManyToOne(() => Orders, (orders) => orders.orders_lines)
+  @JoinColumn({ name: 'ordersId' })
+  ordersId: Orders;
 
   @Column('integer')
   quantity: number;

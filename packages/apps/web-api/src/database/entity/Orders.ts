@@ -2,11 +2,13 @@ import {
   Column,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from './Users';
 import { OrdersEntity, OrdersStatus } from '../../types/orders.types';
+import { OrdersLines } from './OrdersLines';
 
 @Entity()
 export class Orders implements OrdersEntity {
@@ -29,7 +31,12 @@ export class Orders implements OrdersEntity {
   })
   status: OrdersStatus;
 
-  @OneToOne(() => Users)
-  @JoinColumn()
-  users: number;
+  @ManyToOne(() => Users, (users) => users)
+  @JoinColumn({ name: 'usersId' })
+  usersId: number;
+
+  @OneToMany(() => OrdersLines, (ordersLines) => ordersLines.ordersId, {
+    cascade: true,
+  })
+  orders_lines: OrdersLines[];
 }

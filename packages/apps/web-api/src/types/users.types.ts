@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Orders } from '../database/entity/Orders';
 
 export enum UsersRoles {
   CUSTOMER = 'customer',
@@ -26,7 +27,7 @@ export interface UsersEntity extends Users {
   /**
    * Corresponding to the address foreign key
    */
-  address: number;
+  orders: Orders[];
 }
 
 export type UserCredential = Pick<
