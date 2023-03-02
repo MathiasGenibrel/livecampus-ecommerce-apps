@@ -19,3 +19,7 @@ export interface AbstractProductsController {
   edit: (req: Request, res: Response) => Promise<void>;
   delete: (req: Request, res: Response) => Promise<Response<UserCredential>>;
 }
+
+export interface ProductsParams {
+  id: number;
+}

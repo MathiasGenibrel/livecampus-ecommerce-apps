@@ -11,7 +11,11 @@ export const productsRouter = (app: Express) => {
   const router = Router({ caseSensitive: false });
 
   router.get('/', (req, res) => products.find(req, res));
-  router.get('/:id', products.findOne);
+  router.get(
+    '/:id',
+    (req, res, next) => dto.id(req, res, next),
+    (req, res) => products.findOne(req, res)
+  );
 
   router.post(
     '/create',

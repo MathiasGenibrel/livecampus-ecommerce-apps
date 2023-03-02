@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ProductsEntity } from '../types/products.types';
+import { ProductsEntity, ProductsParams } from '../types/products.types';
 import { Repository } from 'typeorm';
 import { AppDataSource } from '../database/data-source';
 import { Products } from '../database/entity/Products';
@@ -36,16 +36,29 @@ export class ProductsController {
    * @param req - Express Request type, body && header from the http request.
    * @param res - Express Response, used to respond to the client request.
    */
-  public findOne(req: Request, res: Response): Response<ProductsEntity> {
-    const product: ProductsEntity = {
-      id: 1,
-      name: 'Airpods',
-      price: 189,
-      description: 'Best wireless headphone',
-      image_link: 'http://localhost:3000/public/img/img_123.webp',
-    };
+  public async findOne(
+    req: Request,
+    res: Response
+  ): Promise<Response<ProductsEntity>> {
+    const params = res.locals.params as ProductsParams;
 
-    return res.status(200).json(product);
+    try {
+      const product: ProductsEntity | null = await this.repository.findOne({
+        where: { id: params.id },
+      });
+
+      if (!product)
+        return res.status(404).json({
+          code: 'NOT FOUND',
+          message: `Product with ${params.id} id, could not be found`,
+        });
+
+      return res.status(200).json(product);
+    } catch (err: unknown) {
+      console.error(err);
+
+      return res.status(500).send();
+    }
   }
 
   /**

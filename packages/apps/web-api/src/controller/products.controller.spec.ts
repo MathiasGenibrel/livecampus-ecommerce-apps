@@ -62,12 +62,25 @@ describe('ProductsController', () => {
   });
 
   describe('findOne', () => {
-    it('should return a 201 status code', () => {
+    it('should return a 201 status code', async () => {
+      controller.repository = {
+        ...controller.repository,
+        findOne: async (): Promise<ProductsEntity> => {
+          return expectedResponse;
+        },
+      };
+
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnValue(expectedResponse),
+        locals: {
+          params: {
+            id: 1,
+          },
+        },
       };
-      const result = controller.findOne(
+
+      const result = await controller.findOne(
         mockReq as Request,
         mockRes as Response
       );
