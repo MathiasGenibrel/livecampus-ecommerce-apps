@@ -11,12 +11,13 @@ import { UsersEntity, UsersRoles } from '../../types/users.types';
 @Entity()
 export class Users implements UsersEntity {
   @PrimaryGeneratedColumn('increment', {
-    unsigned: true,
+    unsigned: false,
   })
   id: number;
 
   @Column('text', {
     nullable: false,
+    unique: true,
   })
   email: string;
 
@@ -25,11 +26,15 @@ export class Users implements UsersEntity {
   })
   password: string;
 
-  @Column('text')
-  firstname: string;
+  @Column('text', {
+    nullable: true,
+  })
+  firstname?: string;
 
-  @Column('text')
-  lastname: string;
+  @Column('text', {
+    nullable: true,
+  })
+  lastname?: string;
 
   @Column('text', {
     default: UsersRoles.CUSTOMER,

@@ -1,29 +1,77 @@
 import { UsersController } from './users.controller';
 import { Request, Response } from 'express';
-import { UserCredential } from '../types/users.types';
+import {
+  AbstractUsersController,
+  UserCredential,
+  UsersRoles,
+} from '../types/users.types';
 
 describe('UsersController', () => {
-  let controller: UsersController;
+  // Use an abstraction to test only business code
+  let controller: AbstractUsersController;
   let mockReq: Partial<Request>;
 
   beforeEach(() => {
-    controller = new UsersController();
+    controller = new UsersController() as unknown as AbstractUsersController;
+
+    // Abstract method from controller
+    controller.alreadyExists = async () => {
+      return;
+    };
+    controller.getUser = async () => {
+      return {
+        id: 1,
+        email: 'mathias@gmail.com',
+        password: 'hashedPassword',
+        firstname: 'mathias',
+        lastname: 'genibrel',
+        role: UsersRoles.CUSTOMER,
+      };
+    };
+    controller.exists = async () => true;
+    controller.comparePassword = async () => {
+      return;
+    };
+    controller.usersRepository = {
+      insert: async () => {
+        return;
+      },
+      createQueryBuilder: jest.fn().mockReturnThis(),
+      update: jest.fn().mockReturnThis(),
+      delete: async () => {
+        return;
+      },
+    };
+
     mockReq = {};
   });
 
   describe('login', () => {
-    it('should return a UserCredential with a 200 status code', () => {
+    it('should return a UserCredential with a 200 status code', async () => {
       const expectedResponse: UserCredential = {
-        username: 'mathias',
-        token: 'randomToken',
+        email: 'mathias@gmail.com',
+        firstname: 'mathias',
+        lastname: 'genibrel',
+        role: UsersRoles.CUSTOMER,
       };
+
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnValue(expectedResponse),
+        set: jest.fn().mockReturnThis(),
+        locals: {
+          usersCredential: {
+            email: 'mathias@gmail.com',
+            password: 'longPassword98!',
+          },
+        },
       };
 
-      const result = controller.login(mockReq as Request, mockRes as Response);
+      const result = await controller.login(
+        mockReq as Request,
+        mockRes as Response
+      );
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toHaveBeenCalledWith(expectedResponse);
@@ -32,12 +80,19 @@ describe('UsersController', () => {
   });
 
   describe('register', () => {
-    it('should return a 201 status code', () => {
+    it('should return a 201 status code', async () => {
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnValue(undefined),
+        locals: {
+          usersCredential: {
+            email: 'mathias.geni@gmail.com',
+            password: 'longPassword98!',
+          },
+        },
       };
-      const result = controller.register(
+
+      const result = await controller.register(
         mockReq as Request,
         mockRes as Response
       );
@@ -49,13 +104,27 @@ describe('UsersController', () => {
   });
 
   describe('edit', () => {
-    it('should return a 204 status code', () => {
+    it('should return a 204 status code', async () => {
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnValue(undefined),
+        locals: {
+          usersContent: {
+            firstname: 'mathias',
+            lastname: 'genibrel',
+          },
+          usersCredentialToken: {
+            id: 4,
+            email: 'mathias.genibrel@gmail.com',
+            role: 'customer',
+          },
+        },
       };
 
-      const result = controller.edit(mockReq as Request, mockRes as Response);
+      const result = await controller.edit(
+        mockReq as Request,
+        mockRes as Response
+      );
 
       expect(mockRes.status).toHaveBeenCalledWith(204);
       expect(mockRes.send).toHaveBeenCalled();
@@ -64,13 +133,23 @@ describe('UsersController', () => {
   });
 
   describe('delete', () => {
-    it('should return a 204 status code', () => {
+    it('should return a 204 status code', async () => {
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnValue(undefined),
+        locals: {
+          usersCredentialToken: {
+            id: 4,
+            email: 'mathias.genibrel@gmail.com',
+            role: 'customer',
+          },
+        },
       };
 
-      const result = controller.delete(mockReq as Request, mockRes as Response);
+      const result = await controller.delete(
+        mockReq as Request,
+        mockRes as Response
+      );
 
       expect(mockRes.status).toHaveBeenCalledWith(204);
       expect(mockRes.send).toHaveBeenCalled();

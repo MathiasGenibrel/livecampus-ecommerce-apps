@@ -11,7 +11,7 @@ import { OrdersEntity, OrdersStatus } from '../../types/orders.types';
 @Entity()
 export class Orders implements OrdersEntity {
   @PrimaryGeneratedColumn('increment', {
-    unsigned: true,
+    unsigned: false,
   })
   id: number;
 

@@ -4,7 +4,7 @@ import { AddressEntity } from '../../types/address.types';
 @Entity()
 export class Address implements AddressEntity {
   @PrimaryGeneratedColumn('increment', {
-    unsigned: true,
+    unsigned: false,
   })
   id: number;
 

@@ -4,7 +4,7 @@ import { Product } from '../../types/products.types';
 @Entity()
 export class Products implements Product {
   @PrimaryGeneratedColumn('increment', {
-    unsigned: true,
+    unsigned: false,
   })
   id: number;
 
