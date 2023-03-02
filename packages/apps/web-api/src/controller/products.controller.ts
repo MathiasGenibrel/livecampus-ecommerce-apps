@@ -109,7 +109,18 @@ export class ProductsController {
    * @param req - Express Request type, body && header from the http request.
    * @param res - Express Response, used to respond to the client request.
    */
-  public delete(req: Request, res: Response): Response<void> {
-    return res.status(204).send();
+  public async delete(req: Request, res: Response): Promise<Response<void>> {
+    const params = res.locals.params as ProductsParams;
+
+    try {
+      // TODO: Check if products exist in db before delete or edit, see method above
+      await this.repository.delete({ id: params.id });
+
+      return res.status(204).send();
+    } catch (err: unknown) {
+      console.error(err);
+
+      res.status(500).send();
+    }
   }
 }

@@ -4,7 +4,7 @@ import {
   AbstractProductsController,
   ProductsEntity,
 } from '../types/products.types';
-import { InsertResult, UpdateResult } from 'typeorm';
+import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 
 describe('ProductsController', () => {
   let controller: AbstractProductsController;
@@ -29,6 +29,9 @@ describe('ProductsController', () => {
       },
       update: async () => {
         return (await Promise.resolve()) as unknown as Promise<UpdateResult>;
+      },
+      delete: async () => {
+        return (await Promise.resolve()) as unknown as Promise<DeleteResult>;
       },
     };
 
@@ -142,10 +145,19 @@ describe('ProductsController', () => {
   });
 
   describe('delete', () => {
-    it('should return a 204 status code', () => {
-      const result = controller.delete(
+    it('should return a 204 status code', async () => {
+      const mockRes: Partial<Response> = {
+        ...mockDefaultRes,
+        locals: {
+          params: {
+            id: 1,
+          },
+        },
+      };
+
+      const result = await controller.delete(
         mockReq as Request,
-        mockDefaultRes as Response
+        mockRes as Response
       );
 
       expect(mockDefaultRes.status).toHaveBeenCalledWith(204);
