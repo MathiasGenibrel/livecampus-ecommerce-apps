@@ -1,7 +1,7 @@
 import { Router, Express } from 'express';
 import { UsersController } from '../controller/users.controller';
 import { UsersDto } from '../middleware/users-dto';
-import { Authorization } from '../middleware/Authorization';
+import { Authorization } from '../middleware/authorization';
 
 const users = new UsersController();
 const dto = new UsersDto();
