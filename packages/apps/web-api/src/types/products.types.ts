@@ -16,6 +16,7 @@ export interface ProductsEntity extends IProducts {
 
 export interface AbstractProductsController {
   repository: Partial<Repository<unknown>>;
+  exists: (id: number) => Promise<void>;
   find: (req: Request, res: Response) => Promise<boolean>;
   findOne: (req: Request, res: Response) => Promise<void>;
   create: (req: Request, res: Response) => Promise<Users>;

@@ -35,6 +35,8 @@ describe('ProductsController', () => {
       },
     };
 
+    controller.exists = () => Promise.resolve();
+
     mockReq = {};
     mockDefaultRes = {
       status: jest.fn().mockReturnThis(),

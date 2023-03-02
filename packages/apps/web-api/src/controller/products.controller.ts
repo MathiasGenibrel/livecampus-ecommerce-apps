@@ -7,12 +7,23 @@ import {
 import { Repository } from 'typeorm';
 import { AppDataSource } from '../database/data-source';
 import { Products } from '../database/entity/Products';
+import { BadRequestError } from '../error/BadRequestError';
 
 export class ProductsController {
   private readonly repository: Repository<ProductsEntity>;
 
   constructor() {
     this.repository = AppDataSource.getRepository(Products);
+  }
+
+  private async exists(id: number): Promise<void> {
+    const isExists = await this.repository.exist({ where: { id } });
+
+    if (!isExists)
+      throw new BadRequestError(
+        `Product with id "${id}" does not exist`,
+        'INVALID ID'
+      );
   }
 
   /**
@@ -94,11 +105,20 @@ export class ProductsController {
     const params = res.locals.params as ProductsParams;
 
     try {
+      // Check if the products exists on database
+      await this.exists(params.id);
+
       await this.repository.update({ id: params.id }, content);
 
       return res.status(204).send();
     } catch (err: unknown) {
       console.error(err);
+
+      if (err instanceof BadRequestError)
+        res.status(err.status).json({
+          code: err.code,
+          message: err.message,
+        });
 
       res.status(500).send();
     }
@@ -113,12 +133,20 @@ export class ProductsController {
     const params = res.locals.params as ProductsParams;
 
     try {
-      // TODO: Check if products exist in db before delete or edit, see method above
+      // Check if the products exists on database
+      await this.exists(params.id);
+
       await this.repository.delete({ id: params.id });
 
       return res.status(204).send();
     } catch (err: unknown) {
       console.error(err);
+
+      if (err instanceof BadRequestError)
+        res.status(err.status).json({
+          code: err.code,
+          message: err.message,
+        });
 
       res.status(500).send();
     }
