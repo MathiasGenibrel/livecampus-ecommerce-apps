@@ -54,7 +54,7 @@ export class UsersController {
    * @private
    */
   private async getUser(email: string): Promise<Users> {
-    const userExists = this.exists(email);
+    const userExists = await this.exists(email);
 
     if (!userExists)
       throw new BadRequestError(
@@ -130,6 +130,8 @@ export class UsersController {
           code: 'Invalid credential',
           message: 'Email or password is incorrect',
         });
+
+      res.status(500).send();
     }
   }
 
