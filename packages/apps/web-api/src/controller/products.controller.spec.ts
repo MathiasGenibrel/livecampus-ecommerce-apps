@@ -1,12 +1,16 @@
 import { ProductsController } from './products.controller';
 import { Request, Response } from 'express';
-import { Product } from '../types/products.types';
+import {
+  AbstractProductsController,
+  ProductsEntity,
+} from '../types/products.types';
+import { InsertResult } from 'typeorm';
 
 describe('ProductsController', () => {
-  let controller: ProductsController;
+  let controller: AbstractProductsController;
   let mockReq: Partial<Request>;
   let mockDefaultRes: Partial<Response>;
-  const expectedResponse: Product = {
+  const expectedResponse: ProductsEntity = {
     id: 1,
     name: 'Airpods',
     price: 189,
@@ -15,7 +19,16 @@ describe('ProductsController', () => {
   };
 
   beforeEach(() => {
-    controller = new ProductsController();
+    controller =
+      new ProductsController() as unknown as AbstractProductsController;
+
+    // Abstract repository method
+    controller.repository = {
+      insert: async () => {
+        return (await Promise.resolve()) as unknown as Promise<InsertResult>;
+      },
+    };
+
     mockReq = {};
     mockDefaultRes = {
       status: jest.fn().mockReturnThis(),
@@ -56,10 +69,19 @@ describe('ProductsController', () => {
   });
 
   describe('create', () => {
-    it('should return a 201 status code', () => {
-      const result = controller.create(
+    it('should return a 201 status code', async () => {
+      const mockRes = {
+        ...mockDefaultRes,
+        locals: {
+          content: {
+            name: 'product',
+          },
+        },
+      };
+
+      const result = await controller.create(
         mockReq as Request,
-        mockDefaultRes as Response
+        mockRes as Response
       );
 
       expect(mockDefaultRes.status).toHaveBeenCalledWith(201);
