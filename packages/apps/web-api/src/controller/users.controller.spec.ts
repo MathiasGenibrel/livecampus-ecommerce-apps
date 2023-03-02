@@ -15,7 +15,9 @@ describe('UsersController', () => {
     controller = new UsersController() as unknown as AbstractUsersController;
 
     // Abstract method from controller
-    controller.alreadyExists = async () => {};
+    controller.alreadyExists = async () => {
+      return;
+    };
     controller.getUser = async () => {
       return {
         id: 1,
@@ -27,12 +29,18 @@ describe('UsersController', () => {
       };
     };
     controller.exists = async () => true;
-    controller.comparePassword = async () => {};
+    controller.comparePassword = async () => {
+      return;
+    };
     controller.usersRepository = {
-      insert: async () => {},
+      insert: async () => {
+        return;
+      },
       createQueryBuilder: jest.fn().mockReturnThis(),
       update: jest.fn().mockReturnThis(),
-      delete: async () => {},
+      delete: async () => {
+        return;
+      },
     };
 
     mockReq = {};
