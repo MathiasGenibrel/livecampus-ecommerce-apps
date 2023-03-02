@@ -43,6 +43,7 @@ interface Repository {
   set: () => Promise<void>;
   where: () => Promise<void>;
   execute: () => Promise<void>;
+  delete: () => Promise<void>;
 }
 
 export interface AbstractUsersController {

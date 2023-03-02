@@ -11,7 +11,6 @@ export const usersRouter = (app: Express) => {
   const router = Router({ caseSensitive: false });
 
   // Get user credential
-  // TODO: Add validation pipe middleware (to control input)
   router.post(
     '/login',
     (req, res, next) => dto.credential(req, res, next),
@@ -26,7 +25,6 @@ export const usersRouter = (app: Express) => {
   );
 
   // Modify user data
-  // TODO: Add validation pipe middleware (to control input)
   router.put(
     '/edit',
     (req, res, next) => auth.validate(req, res, next),
@@ -35,8 +33,11 @@ export const usersRouter = (app: Express) => {
   );
 
   // Remove an user from database
-  // TODO: Add validation pipe middleware (to control params)
-  router.delete('/delete', users.delete);
+  router.delete(
+    '/delete',
+    (req, res, next) => auth.validate(req, res, next),
+    (req, res) => users.delete(req, res)
+  );
 
   app.use('/users', router);
 };

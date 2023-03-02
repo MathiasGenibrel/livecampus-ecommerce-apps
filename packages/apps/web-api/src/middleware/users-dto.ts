@@ -10,7 +10,7 @@ export class UsersDto {
     password: Joi.string().min(12).required(),
   });
 
-  private usersContentSchema = Joi.object({
+  private contentSchema = Joi.object({
     email: Joi.string().email(),
     password: Joi.string().min(12),
     firstname: Joi.string(),
@@ -41,7 +41,7 @@ export class UsersDto {
   public async content(req: Request, res: Response, next: NextFunction) {
     try {
       // Save the data in res.locals to make them accessible in the controller.
-      res.locals.usersContent = await this.usersContentSchema.validateAsync(
+      res.locals.usersContent = await this.contentSchema.validateAsync(
         req.body
       );
 

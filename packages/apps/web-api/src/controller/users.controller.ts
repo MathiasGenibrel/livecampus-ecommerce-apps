@@ -119,7 +119,7 @@ export class UsersController {
       };
 
       // Set bearer token in the header, at Authorization attribut.
-      res.set('Authorization', `Bearer ${token}`);
+      res.set('Authorization', token);
 
       return res.status(200).json(credential);
     } catch (err: unknown) {
@@ -185,6 +185,8 @@ export class UsersController {
       (await bcrypt.hash(usersContent.password, environment.saltRound));
 
     try {
+      await this.exists(usersCredentialToken.email);
+
       await this.usersRepository.update(
         {
           id: usersCredentialToken.id,
@@ -207,6 +209,15 @@ export class UsersController {
    * @param res - Express Response, used to respond to the client request.
    */
   public async delete(req: Request, res: Response): Promise<Response<void>> {
-    return res.status(204).send();
+    const usersCredentialToken = res.locals
+      .usersCredentialToken as UsersCredentialToken;
+
+    try {
+      await this.usersRepository.delete(usersCredentialToken.id);
+
+      return res.status(204).send();
+    } catch (err: unknown) {
+      console.error(err);
+    }
   }
 }
