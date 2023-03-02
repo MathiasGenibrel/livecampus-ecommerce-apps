@@ -26,11 +26,13 @@ describe('UsersController', () => {
         role: UsersRoles.CUSTOMER,
       };
     };
+    controller.exists = async () => true;
     controller.comparePassword = async () => {};
     controller.usersRepository = {
       insert: async () => {},
       createQueryBuilder: jest.fn().mockReturnThis(),
       update: jest.fn().mockReturnThis(),
+      delete: async () => {},
     };
 
     mockReq = {};
@@ -127,6 +129,13 @@ describe('UsersController', () => {
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnValue(undefined),
+        locals: {
+          usersCredentialToken: {
+            id: 4,
+            email: 'mathias.genibrel@gmail.com',
+            role: 'customer',
+          },
+        },
       };
 
       const result = await controller.delete(
