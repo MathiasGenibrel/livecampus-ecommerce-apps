@@ -1,8 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Product } from '../../types/products.types';
+import { ProductsEntity } from '../../types/products.types';
 
 @Entity()
-export class Products implements Product {
+export class Products implements ProductsEntity {
   @PrimaryGeneratedColumn('increment', {
     unsigned: false,
   })
