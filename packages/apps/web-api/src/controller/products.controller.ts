@@ -16,18 +16,19 @@ export class ProductsController {
    * @param req - Express Request type, body && header from the http request.
    * @param res - Express Response, used to respond to the client request.
    */
-  public find(req: Request, res: Response): Response<ProductsEntity[]> {
-    const products: ProductsEntity[] = [
-      {
-        id: 1,
-        name: 'Airpods',
-        price: 189,
-        description: 'Wireless Headphone',
-        image_link: 'http://localhost:3000/public/imgs/nameofimg123456',
-      },
-    ];
+  public async find(
+    req: Request,
+    res: Response
+  ): Promise<Response<ProductsEntity[]>> {
+    try {
+      const products = await this.repository.find();
 
-    return res.status(200).json(products);
+      return res.status(200).json(products);
+    } catch (err: unknown) {
+      console.error(err);
+
+      res.status(500).send();
+    }
   }
 
   /**
@@ -40,8 +41,8 @@ export class ProductsController {
       id: 1,
       name: 'Airpods',
       price: 189,
-      description: 'Wireless Headphone',
-      image_link: 'http://localhost:3000/public/imgs/nameofimg123456',
+      description: 'Best wireless headphone',
+      image_link: 'http://localhost:3000/public/img/img_123.webp',
     };
 
     return res.status(200).json(product);

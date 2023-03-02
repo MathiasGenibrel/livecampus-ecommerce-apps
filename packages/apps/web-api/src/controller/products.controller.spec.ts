@@ -14,8 +14,8 @@ describe('ProductsController', () => {
     id: 1,
     name: 'Airpods',
     price: 189,
-    description: 'Wireless Headphone',
-    image_link: 'http://localhost:3000/public/imgs/nameofimg123456',
+    description: 'Best wireless headphone',
+    image_link: 'http://localhost:3000/public/img/img_123.webp',
   };
 
   beforeEach(() => {
@@ -37,13 +37,23 @@ describe('ProductsController', () => {
   });
 
   describe('find', () => {
-    it('should return a UserCredential with a 200 status code', () => {
+    it('should return a UserCredential with a 200 status code', async () => {
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnValue([expectedResponse]),
       };
 
-      const result = controller.find(mockReq as Request, mockRes as Response);
+      controller.repository = {
+        ...controller.repository,
+        find: async (): Promise<ProductsEntity[]> => {
+          return [expectedResponse];
+        },
+      };
+
+      const result = await controller.find(
+        mockReq as Request,
+        mockRes as Response
+      );
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toHaveBeenCalledWith([expectedResponse]);

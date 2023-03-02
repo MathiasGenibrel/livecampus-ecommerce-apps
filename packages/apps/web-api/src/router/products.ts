@@ -10,7 +10,7 @@ const auth = new Authorization();
 export const productsRouter = (app: Express) => {
   const router = Router({ caseSensitive: false });
 
-  router.get('/', products.find);
+  router.get('/', (req, res) => products.find(req, res));
   router.get('/:id', products.findOne);
 
   router.post(
