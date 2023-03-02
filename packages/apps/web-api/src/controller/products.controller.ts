@@ -21,7 +21,7 @@ export class ProductsController {
 
     if (!isExists)
       throw new BadRequestError(
-        `Product with id "${id}" does not exist`,
+        `Product with id '${id}' does not exist`,
         'INVALID ID'
       );
   }
