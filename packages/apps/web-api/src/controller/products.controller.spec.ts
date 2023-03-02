@@ -4,7 +4,7 @@ import {
   AbstractProductsController,
   ProductsEntity,
 } from '../types/products.types';
-import { InsertResult } from 'typeorm';
+import { InsertResult, UpdateResult } from 'typeorm';
 
 describe('ProductsController', () => {
   let controller: AbstractProductsController;
@@ -26,6 +26,9 @@ describe('ProductsController', () => {
     controller.repository = {
       insert: async () => {
         return (await Promise.resolve()) as unknown as Promise<InsertResult>;
+      },
+      update: async () => {
+        return (await Promise.resolve()) as unknown as Promise<UpdateResult>;
       },
     };
 
@@ -114,10 +117,22 @@ describe('ProductsController', () => {
   });
 
   describe('edit', () => {
-    it('should return a 204 status code', () => {
-      const result = controller.edit(
+    it('should return a 204 status code', async () => {
+      const mockRes: Partial<Response> = {
+        ...mockDefaultRes,
+        locals: {
+          params: {
+            id: 1,
+          },
+          content: {
+            name: 'Airpods',
+          },
+        },
+      };
+
+      const result = await controller.edit(
         mockReq as Request,
-        mockDefaultRes as Response
+        mockRes as Response
       );
 
       expect(mockDefaultRes.status).toHaveBeenCalledWith(204);

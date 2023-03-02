@@ -3,12 +3,15 @@ import { UserCredential } from './users.types';
 import { Users } from '../database/entity/Users';
 import { Repository } from 'typeorm';
 
-export interface ProductsEntity {
-  id: number;
+export interface IProducts {
   name: string;
   description: string;
   image_link: string;
   price: number;
+}
+
+export interface ProductsEntity extends IProducts {
+  id: number;
 }
 
 export interface AbstractProductsController {
@@ -20,6 +23,4 @@ export interface AbstractProductsController {
   delete: (req: Request, res: Response) => Promise<Response<UserCredential>>;
 }
 
-export interface ProductsParams {
-  id: number;
-}
+export type ProductsParams = Pick<ProductsEntity, 'id'>;

@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
-import { ProductsEntity, ProductsParams } from '../types/products.types';
+import {
+  IProducts,
+  ProductsEntity,
+  ProductsParams,
+} from '../types/products.types';
 import { Repository } from 'typeorm';
 import { AppDataSource } from '../database/data-source';
 import { Products } from '../database/entity/Products';
@@ -67,7 +71,7 @@ export class ProductsController {
    * @param res - Express Response, used to respond to the client request.
    */
   public async create(req: Request, res: Response): Promise<Response<void>> {
-    const content = res.locals.content;
+    const content = res.locals.content as IProducts;
 
     try {
       await this.repository.insert(content);
@@ -85,8 +89,19 @@ export class ProductsController {
    * @param req - Express Request type, body && header from the http request.
    * @param res - Express Response, used to respond to the client request.
    */
-  public edit(req: Request, res: Response): Response<void> {
-    return res.status(204).send();
+  public async edit(req: Request, res: Response): Promise<Response<void>> {
+    const content = res.locals.content as IProducts;
+    const params = res.locals.params as ProductsParams;
+
+    try {
+      await this.repository.update({ id: params.id }, content);
+
+      return res.status(204).send();
+    } catch (err: unknown) {
+      console.error(err);
+
+      res.status(500).send();
+    }
   }
 
   /**

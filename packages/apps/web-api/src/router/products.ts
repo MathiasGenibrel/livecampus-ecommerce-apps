@@ -25,7 +25,13 @@ export const productsRouter = (app: Express) => {
   );
 
   // TODO: Add validation pipe middleware (to control input)
-  router.patch('/edit', products.edit);
+  router.put(
+    '/edit/:id',
+    (req, res, next) => auth.admin(req, res, next),
+    (req, res, next) => dto.id(req, res, next),
+    (req, res, next) => dto.edit(req, res, next),
+    (req, res) => products.edit(req, res)
+  );
   router.delete('/delete', products.delete);
 
   app.use('/products', router);
