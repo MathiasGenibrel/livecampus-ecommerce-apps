@@ -31,9 +31,6 @@ describe('UsersController', () => {
       insert: async () => {},
       createQueryBuilder: jest.fn().mockReturnThis(),
       update: jest.fn().mockReturnThis(),
-      set: jest.fn().mockReturnThis(),
-      where: jest.fn().mockReturnThis(),
-      execute: async () => {},
     };
 
     mockReq = {};

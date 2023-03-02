@@ -46,7 +46,7 @@ interface Repository {
 }
 
 export interface AbstractUsersController {
-  usersRepository: Repository;
+  usersRepository: Partial<Repository>;
   exists: (email: string) => Promise<boolean>;
   alreadyExists: (email: string) => Promise<void>;
   getUser: (email: string) => Promise<Users>;

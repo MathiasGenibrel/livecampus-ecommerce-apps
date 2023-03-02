@@ -185,18 +185,16 @@ export class UsersController {
       (await bcrypt.hash(usersContent.password, environment.saltRound));
 
     try {
-      await this.usersRepository
-        .createQueryBuilder()
-        .update()
-        .set({ ...usersContent, password: hashedPassword })
-        .where({
+      await this.usersRepository.update(
+        {
           id: usersCredentialToken.id,
           email: usersCredentialToken.email,
-        })
-        .execute();
+        },
+        { ...usersContent, password: hashedPassword }
+      );
 
       return res.status(204).send();
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err);
 
       res.status(500).send();
