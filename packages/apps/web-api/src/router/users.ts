@@ -27,7 +27,7 @@ export const usersRouter = (app: Express) => {
   // Modify user data
   router.put(
     '/edit',
-    (req, res, next) => auth.validate(req, res, next),
+    (req, res, next) => auth.customer(req, res, next),
     (req, res, next) => dto.content(req, res, next),
     (req, res) => users.edit(req, res)
   );
@@ -35,7 +35,7 @@ export const usersRouter = (app: Express) => {
   // Remove an user from database
   router.delete(
     '/delete',
-    (req, res, next) => auth.validate(req, res, next),
+    (req, res, next) => auth.customer(req, res, next),
     (req, res) => users.delete(req, res)
   );
 
