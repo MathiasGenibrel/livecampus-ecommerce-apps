@@ -1,12 +1,6 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Address } from './Address';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UsersEntity, UsersRoles } from '../../types/users.types';
+import { Orders } from './Orders';
 
 @Entity()
 export class Users implements UsersEntity {
@@ -42,7 +36,6 @@ export class Users implements UsersEntity {
   })
   role: UsersRoles;
 
-  @OneToOne(() => Address)
-  @JoinColumn()
-  address: number;
+  @OneToMany(() => Orders, (orders) => orders.usersId)
+  orders: Orders[];
 }

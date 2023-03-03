@@ -1,12 +1,12 @@
 import * as jwt from 'jsonwebtoken';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
-import { UsersCredentialToken, UsersRoles } from '../types/users.types';
+import { CredentialToken, UsersRoles } from '../types/users.types';
 import { environment } from '../environment/environment';
 import { BadRequestError } from '../error/BadRequestError';
 
 export class Authorization {
-  private getUsersCredential(authorization: string): UsersCredentialToken {
+  private getUsersCredential(authorization: string): CredentialToken {
     const decodedToken: RegExpMatchArray | null =
       authorization.match(/(?<=Bearer\s)\S+/);
 
@@ -19,10 +19,10 @@ export class Authorization {
     return jwt.verify(
       decodedToken[0],
       environment.signedToken
-    ) as UsersCredentialToken;
+    ) as CredentialToken;
   }
 
-  private getCredentials({ headers }: Request): UsersCredentialToken {
+  private getCredentials({ headers }: Request): CredentialToken {
     const authorization = headers.authorization;
 
     if (!authorization)
@@ -36,7 +36,7 @@ export class Authorization {
 
   public customer(req: Request, res: Response, next: NextFunction) {
     try {
-      res.locals.usersCredentialToken = this.getCredentials(req);
+      res.locals.credential = this.getCredentials(req);
 
       next();
     } catch (err: unknown) {
