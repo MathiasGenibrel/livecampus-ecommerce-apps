@@ -1,5 +1,6 @@
 import { Repository } from 'typeorm';
 import { Request, Response } from 'express';
+import { Users } from '../database/entity/Users';
 
 export enum OrdersStatus {
   VALIDATED = 'Validated',
@@ -18,7 +19,7 @@ export interface OrdersEntity extends IOrders {
   /**
    * Corresponding to the users foreign key
    */
-  usersId: number;
+  usersId: Users;
 }
 
 interface OrdersLines {
@@ -28,12 +29,12 @@ interface OrdersLines {
 
 export interface OrdersInput {
   date_order: number;
-  usersId: number;
+  usersId: Pick<Users, 'id'>;
   orders_lines: OrdersLines[];
 }
 
 export interface AbstractOrdersController {
-  ordersRepository: Partial<Repository<unknown>>;
+  repository: Partial<Repository<unknown>>;
   history: (req: Request, res: Response) => Promise<Response<IOrders[]>>;
   create: (req: Request, res: Response) => Promise<Response<void>>;
   updateStatus: (req: Request, res: Response) => Promise<Response<void>>;

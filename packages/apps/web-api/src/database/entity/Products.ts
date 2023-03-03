@@ -29,6 +29,6 @@ export class Products implements ProductsEntity {
   })
   price: number;
 
-  @OneToMany(() => OrdersLines, (ordersLines) => ordersLines.productsId)
-  orders_lines: number;
+  @OneToMany(() => OrdersLines, (ordersLines) => ordersLines.product)
+  orders_lines: OrdersLines[];
 }

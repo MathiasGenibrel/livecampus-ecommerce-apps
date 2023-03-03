@@ -3,12 +3,11 @@ import Joi, { ValidationError } from 'joi';
 
 export class OrdersDto {
   private ordersSchema = Joi.object({
-    date_order: Joi.date().timestamp().required(),
     usersId: Joi.number().integer().positive().required(),
     orders_lines: Joi.array()
       .items(
         Joi.object({
-          productsId: Joi.number().integer().positive().required(),
+          product: Joi.number().integer().positive().required(),
           quantity: Joi.number().integer().positive().required(),
         })
       )

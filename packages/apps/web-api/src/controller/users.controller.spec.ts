@@ -113,7 +113,7 @@ describe('UsersController', () => {
             firstname: 'mathias',
             lastname: 'genibrel',
           },
-          usersCredentialToken: {
+          credential: {
             id: 4,
             email: 'mathias.genibrel@gmail.com',
             role: 'customer',
@@ -138,7 +138,7 @@ describe('UsersController', () => {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnValue(undefined),
         locals: {
-          usersCredentialToken: {
+          credential: {
             id: 4,
             email: 'mathias.genibrel@gmail.com',
             role: 'customer',

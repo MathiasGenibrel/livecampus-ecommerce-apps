@@ -10,8 +10,11 @@ const auth = new Authorization();
 export const ordersRouter = (app: Express) => {
   const router = Router({ caseSensitive: false });
 
-  // TODO: Add validation pipe middleware (to control params)
-  router.get('/history', orders.history);
+  router.get(
+    '/history',
+    (req, res, next) => auth.customer(req, res, next),
+    (req, res) => orders.history(req, res)
+  );
 
   router.post(
     '/',

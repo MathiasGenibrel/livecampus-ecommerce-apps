@@ -10,36 +10,43 @@ describe('OrdersController', () => {
   let controller: AbstractOrdersController;
   let mockReq: Partial<Request>;
 
+  const orders: IOrders[] = [
+    {
+      id: 1,
+      date_order: 1677612786,
+      status: OrdersStatus.VALIDATED,
+    },
+    {
+      id: 2,
+      date_order: 1675654797,
+      status: OrdersStatus.PAID,
+    },
+  ];
+
   beforeEach(() => {
     controller = new OrdersController() as unknown as AbstractOrdersController;
     mockReq = {};
 
-    controller.ordersRepository = {
+    controller.repository = {
       save: async () => {
         return (await Promise.resolve()) as any; // No type equal to SaveResult
+      },
+      find: async () => {
+        return new Promise((resolve) => resolve(orders)) as Promise<IOrders[]>;
       },
     };
   });
 
   describe('history', () => {
     it('should return a Orders list with a 200 status code', async () => {
-      const expectedResponse: IOrders[] = [
-        {
-          id: 1,
-          date_order: 1677612786,
-          status: OrdersStatus.VALIDATED,
-        },
-        {
-          id: 2,
-          date_order: 1675654797,
-          status: OrdersStatus.PAID,
-        },
-      ];
-
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
-        send: jest.fn().mockReturnThis(),
-        json: jest.fn().mockReturnValue(expectedResponse),
+        json: jest.fn().mockReturnValue(orders),
+        locals: {
+          credential: {
+            id: 5,
+          },
+        },
       };
 
       const result = await controller.history(
@@ -48,8 +55,8 @@ describe('OrdersController', () => {
       );
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
-      expect(mockRes.json).toHaveBeenCalledWith(expectedResponse);
-      expect(result).toEqual(expectedResponse);
+      expect(mockRes.json).toHaveBeenCalledWith(orders);
+      expect(result).toEqual(orders);
     });
   });
 

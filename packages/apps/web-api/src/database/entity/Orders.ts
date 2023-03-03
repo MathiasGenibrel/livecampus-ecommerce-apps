@@ -19,6 +19,7 @@ export class Orders implements OrdersEntity {
 
   @Column('integer', {
     nullable: false,
+    default: Date.now,
   })
   /**
    * Saving dates in timestamps
@@ -33,9 +34,9 @@ export class Orders implements OrdersEntity {
 
   @ManyToOne(() => Users, (users) => users)
   @JoinColumn({ name: 'usersId' })
-  usersId: number;
+  usersId: Users;
 
-  @OneToMany(() => OrdersLines, (ordersLines) => ordersLines.ordersId, {
+  @OneToMany(() => OrdersLines, (ordersLines) => ordersLines.order, {
     cascade: true,
   })
   orders_lines: OrdersLines[];

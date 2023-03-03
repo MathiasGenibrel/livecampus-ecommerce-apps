@@ -5,7 +5,7 @@ import {
   UserCredential,
   UsersContentInput,
   UsersCredentialsInput,
-  UsersCredentialToken,
+  CredentialToken,
 } from '../types/users.types';
 import { AppDataSource } from '../database/data-source';
 import { Users } from '../database/entity/Users';
@@ -179,20 +179,19 @@ export class UsersController {
    */
   public async edit(req: Request, res: Response): Promise<Response<void>> {
     const usersContent = res.locals.usersContent as UsersContentInput;
-    const usersCredentialToken = res.locals
-      .usersCredentialToken as UsersCredentialToken;
+    const credential = res.locals.credential as CredentialToken;
 
     const hashedPassword =
       usersContent.password &&
       (await bcrypt.hash(usersContent.password, environment.saltRound));
 
     try {
-      await this.exists(usersCredentialToken.email);
+      await this.exists(credential.email);
 
       await this.usersRepository.update(
         {
-          id: usersCredentialToken.id,
-          email: usersCredentialToken.email,
+          id: credential.id,
+          email: credential.email,
         },
         { ...usersContent, password: hashedPassword }
       );
@@ -211,11 +210,10 @@ export class UsersController {
    * @param res - Express Response, used to respond to the client request.
    */
   public async delete(req: Request, res: Response): Promise<Response<void>> {
-    const usersCredentialToken = res.locals
-      .usersCredentialToken as UsersCredentialToken;
+    const credential = res.locals.credential as CredentialToken;
 
     try {
-      await this.usersRepository.delete(usersCredentialToken.id);
+      await this.usersRepository.delete(credential.id);
 
       return res.status(204).send();
     } catch (err: unknown) {

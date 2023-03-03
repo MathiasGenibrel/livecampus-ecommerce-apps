@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
-import { IOrders, OrdersInput, OrdersStatus } from '../types/orders.types';
+import { IOrders, OrdersInput } from '../types/orders.types';
 import { Orders } from '../database/entity/Orders';
 import { AppDataSource } from '../database/data-source';
 import { Repository } from 'typeorm';
+import { CredentialToken } from '../types/users.types';
 
 export class OrdersController {
-  private readonly ordersRepository: Repository<Orders>;
+  private readonly repository: Repository<Orders>;
 
   constructor() {
-    this.ordersRepository = AppDataSource.getRepository(Orders);
+    this.repository = AppDataSource.getRepository(Orders);
   }
 
   /**
@@ -20,20 +21,20 @@ export class OrdersController {
     req: Request,
     res: Response
   ): Promise<Response<IOrders[]>> {
-    const ordersHistory: IOrders[] = [
-      {
-        id: 1,
-        date_order: 1677612786,
-        status: OrdersStatus.VALIDATED,
-      },
-      {
-        id: 2,
-        date_order: 1675654797,
-        status: OrdersStatus.PAID,
-      },
-    ];
+    const credentials = res.locals.credential as CredentialToken;
 
-    return res.status(200).json(ordersHistory);
+    try {
+      const orders = await this.repository.find({
+        where: { usersId: { id: credentials.id } },
+        relations: ['orders_lines', 'orders_lines.product'],
+      });
+
+      return res.status(200).json(orders);
+    } catch (err) {
+      console.error(err);
+
+      res.status(500).send();
+    }
   }
 
   /**
@@ -45,7 +46,7 @@ export class OrdersController {
     const content = res.locals.content as OrdersInput;
 
     try {
-      await this.ordersRepository.save(content);
+      await this.repository.save(content);
 
       return res.status(201).send();
     } catch (err: unknown) {

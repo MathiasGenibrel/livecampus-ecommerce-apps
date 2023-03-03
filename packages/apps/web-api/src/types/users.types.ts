@@ -35,7 +35,7 @@ export type UserCredential = Pick<
   'email' | 'firstname' | 'lastname' | 'role'
 >;
 
-export type UsersCredentialToken = Pick<Users, 'id' | 'email' | 'role'>;
+export type CredentialToken = Pick<Users, 'id' | 'email' | 'role'>;
 
 interface Repository {
   insert: () => Promise<void>;
