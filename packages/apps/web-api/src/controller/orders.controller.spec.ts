@@ -5,6 +5,7 @@ import {
   IOrders,
   OrdersStatus,
 } from '../types/orders.types';
+import { UpdateResult } from 'typeorm';
 
 describe('OrdersController', () => {
   let controller: AbstractOrdersController;
@@ -33,6 +34,9 @@ describe('OrdersController', () => {
       },
       find: async () => {
         return new Promise((resolve) => resolve(orders)) as Promise<IOrders[]>;
+      },
+      update: async () => {
+        return (await Promise.resolve()) as unknown as Promise<UpdateResult>;
       },
     };
   });
@@ -102,6 +106,12 @@ describe('OrdersController', () => {
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn().mockReturnValue(undefined),
+        locals: {
+          content: {
+            id: 1,
+            status: OrdersStatus.PAID,
+          },
+        },
       };
 
       const result = await controller.updateStatus(

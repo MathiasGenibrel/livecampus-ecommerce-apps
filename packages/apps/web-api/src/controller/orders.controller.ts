@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IOrders, OrdersInput } from '../types/orders.types';
+import { IOrders, OrdersInput, UpdateStatusInput } from '../types/orders.types';
 import { Orders } from '../database/entity/Orders';
 import { AppDataSource } from '../database/data-source';
 import { Repository } from 'typeorm';
@@ -65,6 +65,16 @@ export class OrdersController {
     req: Request,
     res: Response
   ): Promise<Response<void>> {
-    return res.status(204).send();
+    const content = res.locals.content as UpdateStatusInput;
+
+    try {
+      await this.repository.update({ id: content.id }, content);
+
+      return res.status(204).send();
+    } catch (err: unknown) {
+      console.error(err);
+
+      res.status(500).send();
+    }
   }
 }

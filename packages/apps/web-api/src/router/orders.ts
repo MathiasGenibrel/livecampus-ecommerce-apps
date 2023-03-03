@@ -23,8 +23,12 @@ export const ordersRouter = (app: Express) => {
     (res, req) => orders.create(res, req)
   );
 
-  // TODO: Add auth && validation pipe middleware
-  router.put('/updateStatus', orders.updateStatus);
+  router.put(
+    '/updateStatus',
+    (res, req, next) => auth.admin(res, req, next),
+    (res, req, next) => dto.status(res, req, next),
+    (res, req) => orders.updateStatus(res, req)
+  );
 
   app.use('/orders', router);
 };

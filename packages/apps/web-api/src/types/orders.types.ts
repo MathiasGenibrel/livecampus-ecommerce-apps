@@ -33,6 +33,8 @@ export interface OrdersInput {
   orders_lines: OrdersLines[];
 }
 
+export type UpdateStatusInput = Pick<IOrders, 'id' | 'status'>;
+
 export interface AbstractOrdersController {
   repository: Partial<Repository<unknown>>;
   history: (req: Request, res: Response) => Promise<Response<IOrders[]>>;
