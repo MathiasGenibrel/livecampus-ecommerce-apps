@@ -6,7 +6,8 @@ import { mockedProducts } from '../../mock/mockedProducts';
 export class LocalRepository implements ProductsRepository {
   private async fakeRequest<T>(content: T): Promise<T> {
     return await new Promise((resolve) => {
-      setTimeout(() => resolve(content), 200); // Use a 200ms delay to simulate http request
+      // Use a timeout to simulate http request
+      setTimeout(() => resolve(content), 5000);
     });
   }
 
