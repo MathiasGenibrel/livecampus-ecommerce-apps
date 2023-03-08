@@ -12,7 +12,7 @@ export class LocalRepository implements ProductsRepository {
   }
 
   public async find(id: number): Promise<Products> {
-    return await this.fakeRequest<Products>(mockedProducts[id]);
+    return await this.fakeRequest<Products>(mockedProducts[id - 1]);
   }
 
   public async findAll(): Promise<Products[]> {
