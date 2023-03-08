@@ -1,5 +1,20 @@
-import React from 'react';
+import React, { FC } from 'react';
+import clsx from 'clsx';
+import { SkeletonProps } from './skeleton-types';
+import { defaultClassName } from './defaultClassName';
 
-export const ButtonSkeleton = () => (
-  <div className="h-8 bg-gray-200 rounded dark:bg-gray-700 w-36 mb-4 mt-6"></div>
+export const ButtonSkeleton: FC<SkeletonProps> = ({
+  className,
+  width,
+  height,
+}) => (
+  <div
+    className={clsx(
+      defaultClassName,
+      'rounded',
+      className,
+      width ?? 'w-36',
+      height ?? 'h-8'
+    )}
+  ></div>
 );

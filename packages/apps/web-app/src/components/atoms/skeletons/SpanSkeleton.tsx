@@ -1,15 +1,20 @@
 import React, { FC } from 'react';
 import clsx from 'clsx';
+import { SkeletonProps } from './skeleton-types';
+import { defaultClassName } from './defaultClassName';
 
-interface SpanSkeletonProps {
-  maxWidth?: string;
-}
-
-export const SpanSkeleton: FC<SpanSkeletonProps> = ({ maxWidth }) => (
+export const SpanSkeleton: FC<SkeletonProps> = ({
+  className,
+  width,
+  height,
+}) => (
   <div
     className={clsx(
-      'h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5',
-      maxWidth && `max-w-[maxWidth]`
+      defaultClassName,
+      'rounded-full',
+      className,
+      width,
+      height ?? 'h-2'
     )}
   ></div>
 );
