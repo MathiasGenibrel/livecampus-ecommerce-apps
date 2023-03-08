@@ -5,7 +5,11 @@ module.exports = {
     './packages/apps/web-app/src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      aspectRatio: {
+        hero: '21 / 9',
+      },
+    },
   },
   plugins: [
     require('prettier-plugin-tailwindcss'),

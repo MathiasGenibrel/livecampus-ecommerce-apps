@@ -1,17 +1,18 @@
-import { Bag, Person } from 'react-bootstrap-icons';
+import { BagFill, PersonCircle } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
 
 export const Headers = () => {
   return (
-    <article className="flex justify-between items-center mx-4 py-2">
-      <h1 className="text-3xl font-medium">LOGO</h1>
-      <section className="flex justify-between items-baseline gap-6">
-        <Link className="flex gap-2" to={'/login'}>
-          <Person className="text-xl" />
-          <span>Account</span>
+    <article className="sticky top-0 flex justify-between items-center px-4 py-2 bg-white z-10">
+      <Link to={'/'} title="Home">
+        <h1 className="text-3xl font-medium">LOGO</h1>
+      </Link>
+      <section className="flex justify-between items-center gap-4">
+        <Link to={'/login'}>
+          <PersonCircle className="text-xl" />
         </Link>
         <Link to={'/cart'}>
-          <Bag className="text-xl" />
+          <BagFill className="text-xl" />
         </Link>
       </section>
     </article>
