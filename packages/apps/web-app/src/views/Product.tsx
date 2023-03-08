@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 
 import { Headers } from '../components/Header/Headers';
 import { ProductContent } from '../components/ProductContent/ProductContent';
+import { ProductContentSkeleton } from '../components/ProductContent/ProductContentSkeleton';
 
 import { LocalRepository } from '../repository/products/local-repository';
 
@@ -32,6 +33,7 @@ export const Product = () => {
             <ArrowLeftCircleFill />
             <span>Back</span>
           </Link>
+          {isLoading && <ProductContentSkeleton />}
           {data && <ProductContent {...data} />}
         </article>
       </main>

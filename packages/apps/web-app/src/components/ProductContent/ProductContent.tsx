@@ -37,10 +37,22 @@ export const ProductContent: FC<Products> = (product) => {
 
   return (
     <>
-      <img src={product.image_link} alt={product.name} />
-      <section className={'flex justify-between w-full'}>
-        <h1 className={'text-2xl font-medium'}>{product.name}</h1>
-        <span className={'text-xl font-medium'}>{product.price} $</span>
+      <img
+        className={'aspect-square object-scale-down container mt-4'}
+        src={product.image_link}
+        alt={product.name}
+      />
+      <section className={'flex justify-between w-full mt-4'}>
+        <h1
+          className={
+            'text-2xl font-medium w-3/4 whitespace-nowrap overflow-hidden text-ellipsis'
+          }
+        >
+          {product.name}
+        </h1>
+        <span className={'text-xl font-medium w-1/4 text-ellipsis text-right'}>
+          {product.price} $
+        </span>
       </section>
 
       <section className={'flex flex-col gap-2 my-4'}>
