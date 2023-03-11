@@ -1,34 +1,11 @@
 import { createContext, Dispatch, FC, useReducer } from 'react';
-
-interface CartContextProviderProps {
-  children: JSX.Element[] | JSX.Element;
-}
-
-export enum CartAction {
-  ADD = 'add',
-  REMOVE = 'remove',
-}
-
-interface Cart {
-  quantity: number;
-}
-
-interface ActionProduct {
-  quantity: number;
-}
-
-interface Action {
-  type: CartAction;
-  id: number;
-  product?: ActionProduct;
-}
-
-export const CART_CONTEXT = createContext<State | null>(null);
-export const CART_CONTEXT_DISPATCHER = createContext<Dispatch<Action> | null>(
-  null
-);
-
-type State = Map<number, Cart>;
+import {
+  Action,
+  ActionProduct,
+  CartAction,
+  CartContextProviderProps,
+  State,
+} from './cart-types';
 
 /**
  * Update or insert data in current state, to not erase previous quantity
@@ -66,10 +43,18 @@ const cartDispatcher = (state: State, action: Action): State => {
   }
 };
 
+// Get saved cart in local storage.
 const localStorageCart = localStorage.getItem('cart');
-const initCart = localStorageCart
+
+// Create map for the default context value
+const initCart: State = localStorageCart
   ? (new Map(JSON.parse(localStorageCart)) as State)
   : new Map();
+
+export const CART_CONTEXT = createContext<State>(initCart);
+export const CART_CONTEXT_DISPATCHER = createContext<Dispatch<Action> | null>(
+  null
+);
 
 export const CartContextProvider: FC<CartContextProviderProps> = ({
   children,

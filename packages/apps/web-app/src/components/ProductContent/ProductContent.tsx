@@ -1,16 +1,14 @@
-import { FC, useContext } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
-import * as Joi from 'joi';
-
 import { Button, toaster } from 'evergreen-ui';
+import { FC, useContext } from 'react';
+import * as Joi from 'joi';
+import clsx from 'clsx';
+
+import { CART_CONTEXT_DISPATCHER } from '../../contexts/cart/cart-context';
 
 import { Products } from '../../types/products';
-import clsx from 'clsx';
-import {
-  CART_CONTEXT_DISPATCHER,
-  CartAction,
-} from '../../contexts/cart/cart-context';
+import { CartAction } from '../../contexts/cart/cart-types';
 
 interface ProductForm {
   quantity: number;

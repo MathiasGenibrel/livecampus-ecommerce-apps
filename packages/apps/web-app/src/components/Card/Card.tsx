@@ -2,10 +2,8 @@ import React, { FC, ReactEventHandler, useContext } from 'react';
 import { NavigateFunction } from 'react-router-dom';
 import { Products } from '../../types/products';
 import { Button, toaster } from 'evergreen-ui';
-import {
-  CART_CONTEXT_DISPATCHER,
-  CartAction,
-} from '../../contexts/cart/cart-context';
+import { CART_CONTEXT_DISPATCHER } from '../../contexts/cart/cart-context';
+import { CartAction } from '../../contexts/cart/cart-types';
 
 interface CardProps {
   product: Products;
