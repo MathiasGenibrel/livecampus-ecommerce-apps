@@ -2,20 +2,19 @@ import React, { useContext } from 'react';
 import { Headers } from '../components/Header/Headers';
 import { Spinner } from 'evergreen-ui';
 import { useQuery } from 'react-query';
-import { LocalRepository } from '../repository/products/local-repository';
 import { CART_CONTEXT } from '../contexts/cart/cart-context';
 import { ListCard } from '../components/Cart/ListCard';
 import { Submenu } from '../components/Cart/Submenu';
-
-const repository = new LocalRepository();
+import { useProductsRepository } from '../hooks/useProductsRepository';
 
 export const Cart = () => {
   const cart = useContext(CART_CONTEXT);
+  const productsRepository = useProductsRepository();
 
   // Set cache time to 0, to check all data of product (price, stock, ...)
   const { data, isLoading } = useQuery(
     'cart',
-    () => repository.findAll([...cart.keys()]),
+    () => productsRepository.findAll([...cart.keys()]),
     {
       cacheTime: 0,
     }

@@ -2,16 +2,14 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 
-import { LocalRepository } from '../repository/products/local-repository';
-
 import { Card } from '../components/Card/Card';
 import { Headers } from '../components/Header/Headers';
 import { CardSkeleton } from '../components/Card/CardSkeleton';
 import { Hero } from '../components/Hero/Hero';
-
-const productsRepository = new LocalRepository();
+import { useProductsRepository } from '../hooks/useProductsRepository';
 
 export const Landing = () => {
+  const productsRepository = useProductsRepository();
   const navigate: NavigateFunction = useNavigate();
   const { data, isLoading } = useQuery(
     'products',

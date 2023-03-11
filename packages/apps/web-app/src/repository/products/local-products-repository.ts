@@ -3,7 +3,7 @@ import { Products } from '../../types/products';
 
 import { mockedProducts } from '../../mock/mockedProducts';
 
-export class LocalRepository implements ProductsRepository {
+export class LocalProductsRepository implements ProductsRepository {
   private async fakeRequest<T>(content: T): Promise<T> {
     return await new Promise((resolve) => {
       // Use a timeout to simulate http request

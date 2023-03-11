@@ -6,13 +6,11 @@ import { useQuery } from 'react-query';
 import { Headers } from '../components/Header/Headers';
 import { ProductContent } from '../components/ProductContent/ProductContent';
 import { ProductContentSkeleton } from '../components/ProductContent/ProductContentSkeleton';
-
-import { LocalRepository } from '../repository/products/local-repository';
-
-const productsRepository = new LocalRepository();
+import { useProductsRepository } from '../hooks/useProductsRepository';
 
 export const Product = () => {
   const params = useParams();
+  const productsRepository = useProductsRepository();
 
   if (!params.id)
     throw new ReferenceError('The id params is null or undefined');
