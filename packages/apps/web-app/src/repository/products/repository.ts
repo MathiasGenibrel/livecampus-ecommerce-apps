@@ -1,6 +1,6 @@
 import { Products } from '../../types/products';
 
 export interface ProductsRepository {
-  findAll: () => Promise<Products[]>;
+  findAll: (ids?: number[]) => Promise<Products[]>;
   find: (id: number) => Promise<Products>;
 }

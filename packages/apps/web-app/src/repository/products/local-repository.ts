@@ -15,7 +15,11 @@ export class LocalRepository implements ProductsRepository {
     return await this.fakeRequest<Products>(mockedProducts[id - 1]);
   }
 
-  public async findAll(): Promise<Products[]> {
-    return await this.fakeRequest<Products[]>(mockedProducts);
+  public async findAll(ids?: number[]): Promise<Products[]> {
+    const mockedFilters = ids
+      ? mockedProducts.filter((e) => ids?.includes(e.id))
+      : mockedProducts;
+
+    return await this.fakeRequest<Products[]>(mockedFilters);
   }
 }

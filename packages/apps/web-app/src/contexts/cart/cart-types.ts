@@ -5,6 +5,8 @@ export interface CartContextProviderProps {
 export enum CartAction {
   ADD = 'add',
   REMOVE = 'remove',
+  INCREASE = 'increase',
+  DECREASE = 'decrease',
 }
 
 export interface Cart {

@@ -20,6 +20,27 @@ const upsert = (currentMap: State, key: number, value: ActionProduct) => {
   currentMap.set(key, { quantity: existingValue.quantity + value.quantity });
 };
 
+const increaseQuantity = (currentMap: State, id: number) => {
+  const existingValue = currentMap.get(id);
+
+  if (!existingValue)
+    throw new ReferenceError('Product does not exist on cart');
+  return currentMap.set(id, { quantity: existingValue.quantity + 1 });
+};
+
+const decreaseQuantity = (currentMap: State, id: number) => {
+  const existingValue = currentMap.get(id);
+
+  if (!existingValue)
+    throw new ReferenceError('Product does not exist on cart');
+
+  const newQuantity = existingValue.quantity - 1;
+
+  if (newQuantity === 0) return currentMap.delete(id);
+
+  return currentMap.set(id, { quantity: existingValue.quantity - 1 });
+};
+
 const cartDispatcher = (state: State, action: Action): State => {
   const currentState = new Map(state);
 
@@ -35,6 +56,16 @@ const cartDispatcher = (state: State, action: Action): State => {
     case CartAction.REMOVE:
       currentState.delete(action.id);
       localStorage.setItem('cart', JSON.stringify(currentState));
+      return currentState;
+
+    case CartAction.INCREASE:
+      increaseQuantity(currentState, action.id);
+      localStorage.setItem('cart', JSON.stringify([...currentState]));
+      return currentState;
+
+    case CartAction.DECREASE:
+      decreaseQuantity(currentState, action.id);
+      localStorage.setItem('cart', JSON.stringify([...currentState]));
       return currentState;
 
     default:
