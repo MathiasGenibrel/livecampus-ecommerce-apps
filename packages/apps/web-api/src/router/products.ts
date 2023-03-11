@@ -10,7 +10,11 @@ const auth = new Authorization();
 export const productsRouter = (app: Express) => {
   const router = Router({ caseSensitive: false });
 
-  router.get('/', (req, res) => products.find(req, res));
+  router.get(
+    '/',
+    (req, res, next) => dto.ids(req, res, next),
+    (req, res) => products.find(req, res)
+  );
   router.get(
     '/:id',
     (req, res, next) => dto.id(req, res, next),

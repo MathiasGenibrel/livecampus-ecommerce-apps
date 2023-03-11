@@ -4,7 +4,7 @@ import {
   ProductsEntity,
   ProductsParams,
 } from '../types/products.types';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { AppDataSource } from '../database/data-source';
 import { Products } from '../database/entity/Products';
 import { BadRequestError } from '../error/BadRequestError';
@@ -36,7 +36,12 @@ export class ProductsController {
     res: Response
   ): Promise<Response<ProductsEntity[]>> {
     try {
-      const products = await this.repository.find();
+      const ids = res.locals.query?.ids as undefined | number[];
+      const products = await this.repository.find(
+        ids && {
+          where: { id: In(ids) },
+        }
+      );
 
       return res.status(200).json(products);
     } catch (err: unknown) {
