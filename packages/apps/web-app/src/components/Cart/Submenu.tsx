@@ -7,7 +7,7 @@ import { Products } from '../../types/products';
 import { CART_CONTEXT } from '../../contexts/cart/cart-context';
 
 const getTotalPrice = (cart: State, data: Products[]) => {
-  let sum: number = 0;
+  let sum = 0;
 
   data.forEach((product) => {
     const currentProductCart = cart.get(product.id);

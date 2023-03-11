@@ -21,6 +21,8 @@ export const ListCard: FC<ListCardProps> = ({ data }) => {
               <Card product={product} quantity={productCart.quantity} />
             </li>
           );
+
+        return null;
       })}
     </ul>
   );

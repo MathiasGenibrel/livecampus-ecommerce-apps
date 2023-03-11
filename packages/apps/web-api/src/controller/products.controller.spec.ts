@@ -49,6 +49,9 @@ describe('ProductsController', () => {
       const mockRes: Partial<Response> = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnValue([expectedResponse]),
+        locals: {
+          ids: [1],
+        },
       };
 
       controller.repository = {
