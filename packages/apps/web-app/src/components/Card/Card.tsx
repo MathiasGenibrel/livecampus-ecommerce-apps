@@ -18,7 +18,9 @@ export const Card: FC<CardProps> = ({ product, navigate }) => {
     updateCart &&
       updateCart({ type: CartAction.ADD, id, product: { quantity: 1 } });
 
-    toaster.success(`You have just added 1 ${product.name} to your cart`);
+    toaster.success(`You have just added 1 ${product.name} to your cart`, {
+      duration: 1.5,
+    });
   };
 
   const clickHandler: ReactEventHandler<HTMLElement> = (element) => {

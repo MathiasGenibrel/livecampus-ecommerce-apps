@@ -43,7 +43,10 @@ export const ProductContent: FC<Products> = (product) => {
       });
 
     toaster.success(
-      `You have just added ${data.quantity} ${product.name} to your cart`
+      `You have just added ${data.quantity} ${product.name} to your cart`,
+      {
+        duration: 1.5,
+      }
     );
   };
 
