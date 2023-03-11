@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
 import * as Joi from 'joi';
@@ -7,6 +7,10 @@ import { Button, toaster } from 'evergreen-ui';
 
 import { Products } from '../../types/products';
 import clsx from 'clsx';
+import {
+  CART_CONTEXT_DISPATCHER,
+  CartAction,
+} from '../../contexts/cart/cart-context';
 
 interface ProductForm {
   quantity: number;
@@ -17,6 +21,7 @@ const schema = Joi.object({
 });
 
 export const ProductContent: FC<Products> = (product) => {
+  const updateCart = useContext(CART_CONTEXT_DISPATCHER);
   const {
     register,
     handleSubmit,
@@ -29,7 +34,17 @@ export const ProductContent: FC<Products> = (product) => {
     if (!event) throw new ReferenceError('Event is undefined');
 
     event.preventDefault();
-    console.log(data);
+
+    updateCart &&
+      updateCart({
+        type: CartAction.ADD,
+        id: product.id,
+        product: { quantity: data.quantity },
+      });
+
+    toaster.success(
+      `You have just added ${data.quantity} ${product.name} to your cart`
+    );
   };
 
   // Display toast error for on each refresh of the component if the quantity input has an error (anonymous function)

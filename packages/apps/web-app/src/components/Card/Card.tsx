@@ -1,7 +1,11 @@
-import React, { FC, ReactEventHandler } from 'react';
+import React, { FC, ReactEventHandler, useContext } from 'react';
 import { NavigateFunction } from 'react-router-dom';
 import { Products } from '../../types/products';
-import { Button } from 'evergreen-ui';
+import { Button, toaster } from 'evergreen-ui';
+import {
+  CART_CONTEXT_DISPATCHER,
+  CartAction,
+} from '../../contexts/cart/cart-context';
 
 interface CardProps {
   product: Products;
@@ -9,7 +13,13 @@ interface CardProps {
 }
 
 export const Card: FC<CardProps> = ({ product, navigate }) => {
-  const addToCart = (id: number) => console.log('PRODUCT ID : ', id);
+  const updateCart = useContext(CART_CONTEXT_DISPATCHER);
+  const addToCart = (id: number) => {
+    updateCart &&
+      updateCart({ type: CartAction.ADD, id, product: { quantity: 1 } });
+
+    toaster.success(`You have just added 1 ${product.name} to your cart`);
+  };
 
   const clickHandler: ReactEventHandler<HTMLElement> = (element) => {
     const target = element.target as HTMLElement;
