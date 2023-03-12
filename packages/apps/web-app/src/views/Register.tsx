@@ -44,6 +44,7 @@ export const Register = () => {
             label={'Email'}
             type="email"
             autoComplete="email"
+            autoFocus={true}
             hint={errors.email?.message as ReactNode}
             isInvalid={!!errors.email}
           />
