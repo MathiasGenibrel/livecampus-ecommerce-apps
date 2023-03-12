@@ -61,8 +61,10 @@
   "dependencies": {
     "@hookform/resolvers": "^2.9.11",
     "@tailwindcss/line-clamp": "^0.4.2",
+    "@types/cors": "^2.8.13",
     "bcryptjs": "^2.4.3",
     "clsx": "^1.2.1",
+    "cors": "^2.8.5",
     "evergreen-ui": "^7.1.4",
     "joi": "^17.8.3",
     "jsonwebtoken": "^9.0.0",

@@ -34,6 +34,33 @@ export class Authorization {
     return this.getUsersCredential(authorization);
   }
 
+  public connectionWithToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (req.headers.authorization === 'Bearer null')
+        return res.status(201).json(null);
+
+      res.locals.credential = this.getCredentials(req);
+
+      next();
+    } catch (err: unknown) {
+      console.error(err);
+
+      if (err instanceof JsonWebTokenError)
+        return res.status(400).json({
+          code: err.name,
+          message: err.message,
+        });
+
+      if (err instanceof BadRequestError)
+        return res.status(err.status).json({
+          code: err.code,
+          message: err.message,
+        });
+
+      res.status(500).send();
+    }
+  }
+
   public customer(req: Request, res: Response, next: NextFunction) {
     try {
       res.locals.credential = this.getCredentials(req);

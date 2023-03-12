@@ -6,6 +6,7 @@ import {
   CartContextProviderProps,
   State,
 } from './cart-types';
+import { environment } from '../../environment/environment';
 
 /**
  * Update or insert data in current state, to not erase previous quantity
@@ -50,22 +51,34 @@ const cartDispatcher = (state: State, action: Action): State => {
         throw new ReferenceError('Action product cannot be undefined or null');
 
       upsert(currentState, action.id, action.product);
-      localStorage.setItem('cart', JSON.stringify([...currentState]));
+      localStorage.setItem(
+        environment.localStorageKeys.cart,
+        JSON.stringify([...currentState])
+      );
       return currentState;
 
     case CartAction.REMOVE:
       currentState.delete(action.id);
-      localStorage.setItem('cart', JSON.stringify(currentState));
+      localStorage.setItem(
+        environment.localStorageKeys.cart,
+        JSON.stringify(currentState)
+      );
       return currentState;
 
     case CartAction.INCREASE:
       increaseQuantity(currentState, action.id);
-      localStorage.setItem('cart', JSON.stringify([...currentState]));
+      localStorage.setItem(
+        environment.localStorageKeys.cart,
+        JSON.stringify([...currentState])
+      );
       return currentState;
 
     case CartAction.DECREASE:
       decreaseQuantity(currentState, action.id);
-      localStorage.setItem('cart', JSON.stringify([...currentState]));
+      localStorage.setItem(
+        environment.localStorageKeys.cart,
+        JSON.stringify([...currentState])
+      );
       return currentState;
 
     default:
@@ -75,7 +88,9 @@ const cartDispatcher = (state: State, action: Action): State => {
 };
 
 // Get saved cart in local storage.
-const localStorageCart = localStorage.getItem('cart');
+const localStorageCart = localStorage.getItem(
+  environment.localStorageKeys.cart
+);
 
 // Create map for the default context value
 const initCart: State = localStorageCart
