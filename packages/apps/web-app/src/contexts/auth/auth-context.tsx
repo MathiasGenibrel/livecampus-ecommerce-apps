@@ -46,7 +46,7 @@ const dispatcher = (
     case AuthActionType.EDIT:
       if (!action.editCredential)
         throw new TypeError('Credential are necessary to update user profile.');
-      return { ...currentState, ...action.editCredential };
+      return { ...currentState, ...action.editCredential } as AuthCredential;
 
     default:
       return currentState;

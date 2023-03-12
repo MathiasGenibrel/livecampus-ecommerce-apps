@@ -11,6 +11,13 @@ export const usersRouter = (app: Express) => {
   const router = Router({ caseSensitive: false });
 
   // Get user credential
+  router.get(
+    '/login',
+    (req, res, next) => auth.connectionWithToken(req, res, next),
+    (req, res) => users.login(req, res)
+  );
+
+  // Get user credential
   router.post(
     '/login',
     (req, res, next) => dto.credential(req, res, next),

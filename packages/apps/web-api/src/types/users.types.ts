@@ -30,10 +30,10 @@ export interface UsersEntity extends Users {
   orders: Orders[];
 }
 
-export type UserCredential = Pick<
-  Users,
-  'email' | 'firstname' | 'lastname' | 'role'
->;
+export interface UserCredential
+  extends Pick<Users, 'email' | 'firstname' | 'lastname' | 'role'> {
+  token: string;
+}
 
 export type CredentialToken = Pick<Users, 'id' | 'email' | 'role'>;
 

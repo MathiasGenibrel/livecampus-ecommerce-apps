@@ -97,9 +97,30 @@ export class UsersController {
     res: Response
   ): Promise<Response<UserCredential>> {
     const usersCredential = res.locals.usersCredential as UsersCredentialsInput;
+    const headers = res.locals.credential as CredentialToken;
 
     try {
-      const user = await this.getUser(usersCredential.email);
+      const user = await this.getUser(
+        headers ? headers.email : usersCredential.email
+      );
+
+      if (headers) {
+        const token = jwt.sign(
+          { id: user.id, email: user.email, role: user.role },
+          environment.signedToken
+        );
+
+        // Credential to send to the client
+        const credential: UserCredential = {
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          role: user.role,
+          token: token,
+        };
+
+        return res.status(200).json(credential);
+      }
 
       // Check if the password is the same as the one in the database
       await this.comparePassword(usersCredential.password, user.password);
@@ -116,10 +137,8 @@ export class UsersController {
         firstname: user.firstname,
         lastname: user.lastname,
         role: user.role,
+        token: token,
       };
-
-      // Set bearer token in the header, at Authorization attribut.
-      res.set('Authorization', token);
 
       return res.status(200).json(credential);
     } catch (err: unknown) {

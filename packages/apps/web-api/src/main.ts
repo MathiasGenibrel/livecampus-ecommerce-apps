@@ -2,6 +2,8 @@ import 'reflect-metadata';
 import express from 'express';
 import { AppDataSource } from './database/data-source';
 import { router } from './router/router';
+import cors from 'cors';
+import { environment } from './environment/environment';
 
 const bootstrap = async (): Promise<void> => {
   try {
@@ -13,6 +15,7 @@ const bootstrap = async (): Promise<void> => {
 
     const app = express();
     app.use(express.json());
+    app.use(cors());
 
     router(app);
 
