@@ -22,11 +22,11 @@ export const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<ConnectionCredential>({
     resolver: joiResolver(schema),
   });
 
-  const submitHandler: SubmitHandler<any> = (
+  const submitHandler: SubmitHandler<ConnectionCredential> = (
     data: ConnectionCredential,
     event
   ) => {

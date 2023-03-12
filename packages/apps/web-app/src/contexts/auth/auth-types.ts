@@ -1,4 +1,4 @@
-import { Credential } from '../../repository/auth/repository';
+import { Credential, EditCredential } from '../../repository/auth/repository';
 
 export interface AuthContextProviderProps {
   children: JSX.Element | JSX.Element[];
@@ -12,6 +12,7 @@ export enum AuthActionType {
 
 export interface Action {
   type: AuthActionType;
+  editCredential?: EditCredential;
   credential?: Credential;
   token?: string;
 }

@@ -10,6 +10,12 @@ export interface Credential {
   lastname?: string;
 }
 
+export interface EditCredential {
+  email: string;
+  firstname?: string | null;
+  lastname?: string | null;
+}
+
 export interface AuthCredential extends Credential {
   token: string;
 }
@@ -26,6 +32,6 @@ export interface AuthRepository {
   register: (email: string, password: string) => Promise<AuthCredential>;
   connect: (email: string, password: string) => Promise<AuthCredential>;
   userCredential: (token: string | null) => Promise<Credential | null>;
-  edit: (content: Partial<Credential>, token: string) => Promise<void>;
+  edit: (content: EditCredential, token: string) => Promise<void>;
   delete: (token: string) => Promise<void>;
 }

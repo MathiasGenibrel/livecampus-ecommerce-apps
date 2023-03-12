@@ -1,7 +1,7 @@
 import {
   AuthCredential,
   AuthRepository,
-  Credential,
+  EditCredential,
   UserRole,
 } from './repository';
 
@@ -45,10 +45,7 @@ export class LocalAuthRepository implements AuthRepository {
     });
   }
 
-  public async edit(
-    content: Partial<Credential>,
-    token: string
-  ): Promise<void> {
+  public async edit(content: EditCredential, token: string): Promise<void> {
     return await this.fakeRequest<void>(undefined);
   }
 
