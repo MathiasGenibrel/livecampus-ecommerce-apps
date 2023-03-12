@@ -1,4 +1,4 @@
-import { createContext, Dispatch, FC, useReducer } from 'react';
+import { createContext, Dispatch, FC, useEffect, useReducer } from 'react';
 import {
   AuthCredential,
   NullAuthCredential,
@@ -8,14 +8,12 @@ import { environment } from '../../environment/environment';
 import { useQuery } from 'react-query';
 import { useAuthRepository } from '../../hooks/useAuthRepository';
 
-const LOCAL_STORAGE_AUTH_TOKEN = localStorage.getItem(
-  environment.localStorageKeys.auth
-);
-
 const initAuthValue: NullAuthCredential = {
   email: null,
   role: null,
   token: null,
+  firstname: null,
+  lastname: null,
 };
 
 export const AUTH_CONTEXT = createContext<AuthCredential | NullAuthCredential>(
@@ -59,13 +57,23 @@ export const AuthContextProvider: FC<AuthContextProviderProps> = ({
   children,
 }) => {
   const auth = useAuthRepository();
-  const { data } = useQuery('getSessionCredential', () =>
-    auth.userCredential(LOCAL_STORAGE_AUTH_TOKEN)
+
+  const { data, refetch } = useQuery(
+    'getSessionCredential',
+    async () => {
+      const authToken = localStorage.getItem(environment.localStorageKeys.auth);
+      return await auth.userCredential(authToken);
+    },
+    { enabled: false }
   );
 
   const [state, dispatch] = useReducer(dispatcher, data ?? initAuthValue);
 
-  if (data && !state)
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  if (data && !state.token)
     dispatch({
       type: AuthActionType.CONNECT,
       token: data.token,

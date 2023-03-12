@@ -18,6 +18,8 @@ export interface NullAuthCredential {
   email: null;
   role: null;
   token: null;
+  firstname: null;
+  lastname: null;
 }
 
 export interface AuthRepository {
