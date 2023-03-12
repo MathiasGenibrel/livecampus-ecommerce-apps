@@ -1,29 +1,42 @@
 import { createContext, Dispatch, FC, useReducer } from 'react';
-import { Credential } from '../../repository/auth/repository';
+import { AuthCredential, Credential } from '../../repository/auth/repository';
 import { Action, AuthActionType, AuthContextProviderProps } from './auth-types';
+import { environment } from '../../environment/environment';
+import { useQuery } from 'react-query';
+import { useAuthRepository } from '../../hooks/useAuthRepository';
 
+const LOCAL_STORAGE_AUTH_TOKEN = localStorage.getItem(
+  environment.localStorageKeys.auth
+);
 export const AUTH_CONTEXT = createContext<Credential | null>(null);
 export const AUTH_CONTEXT_DISPATCHER = createContext<Dispatch<Action> | null>(
   null
 );
 
 const dispatcher = (
-  state: Credential | null,
+  state: AuthCredential | null,
   action: Action
-): Credential | null => {
+): AuthCredential | null => {
+  const currentState = { ...state } as AuthCredential;
+
   switch (action.type) {
     case AuthActionType.CONNECT:
       if (!action.credential)
         throw new TypeError('Credential are necessary to connect an user.');
-      return action.credential;
+      if (!action.token)
+        throw new TypeError('Token are necessary to connect an user.');
+
+      localStorage.setItem(environment.localStorageKeys.auth, action.token);
+      return { ...action.credential, token: action.token };
 
     case AuthActionType.DISCONNECT:
+      localStorage.removeItem(environment.localStorageKeys.auth);
       return null;
 
     case AuthActionType.EDIT:
       if (!action.credential)
         throw new TypeError('Credential are necessary to update user profile.');
-      return action.credential;
+      return { ...currentState, ...action.credential };
 
     default:
       return null;
@@ -33,7 +46,19 @@ const dispatcher = (
 export const AuthContextProvider: FC<AuthContextProviderProps> = ({
   children,
 }) => {
-  const [state, dispatch] = useReducer(dispatcher, null);
+  const auth = useAuthRepository();
+  const { data } = useQuery('getSessionCredential', () =>
+    auth.userCredential(LOCAL_STORAGE_AUTH_TOKEN)
+  );
+
+  const [state, dispatch] = useReducer(dispatcher, data ?? null);
+
+  if (data && !state)
+    dispatch({
+      type: AuthActionType.CONNECT,
+      token: data.token,
+      credential: { ...data },
+    });
 
   return (
     <AUTH_CONTEXT.Provider value={state}>

@@ -21,6 +21,7 @@ export const useLogin = () => {
           authContextDispatcher({
             type: AuthActionType.CONNECT,
             credential: { ...data },
+            token: data.token,
           });
 
         navigate('/');

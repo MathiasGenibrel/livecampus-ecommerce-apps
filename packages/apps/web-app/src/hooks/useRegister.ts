@@ -20,6 +20,7 @@ export const useRegister = () => {
           authContextDispatcher({
             type: AuthActionType.CONNECT,
             credential: { ...data },
+            token: data.token,
           });
 
         navigate('/');

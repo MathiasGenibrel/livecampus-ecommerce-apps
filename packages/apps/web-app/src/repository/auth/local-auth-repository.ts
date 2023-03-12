@@ -1,4 +1,9 @@
-import { AuthRepository, Credential, UserRole } from './repository';
+import {
+  AuthCredential,
+  AuthRepository,
+  Credential,
+  UserRole,
+} from './repository';
 
 export class LocalAuthRepository implements AuthRepository {
   private async fakeRequest<T>(content: T): Promise<T> {
@@ -8,14 +13,35 @@ export class LocalAuthRepository implements AuthRepository {
     });
   }
 
-  public async register(email: string, password: string): Promise<Credential> {
+  public async register(
+    email: string,
+    password: string
+  ): Promise<AuthCredential> {
     return await this.connect(email, password);
   }
 
-  public async connect(email: string, password: string): Promise<Credential> {
-    return await this.fakeRequest<Credential>({
+  public async connect(
+    email: string,
+    password: string
+  ): Promise<AuthCredential> {
+    return await this.fakeRequest<AuthCredential>({
       email: 'customer@beepshop.us',
       role: UserRole.CUSTOMER,
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+    });
+  }
+
+  public async userCredential(
+    token: string | null
+  ): Promise<AuthCredential | null> {
+    if (!token) return null;
+
+    return await this.fakeRequest<AuthCredential>({
+      email: 'customer@beepshop.us',
+      role: UserRole.CUSTOMER,
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
     });
   }
 

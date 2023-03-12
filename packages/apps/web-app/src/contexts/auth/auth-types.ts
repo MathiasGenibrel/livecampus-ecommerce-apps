@@ -13,4 +13,5 @@ export enum AuthActionType {
 export interface Action {
   type: AuthActionType;
   credential?: Credential;
+  token?: string;
 }
