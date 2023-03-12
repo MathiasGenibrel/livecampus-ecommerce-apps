@@ -1,5 +1,8 @@
 import { createContext, Dispatch, FC, useReducer } from 'react';
-import { AuthCredential, Credential } from '../../repository/auth/repository';
+import {
+  AuthCredential,
+  NullAuthCredential,
+} from '../../repository/auth/repository';
 import { Action, AuthActionType, AuthContextProviderProps } from './auth-types';
 import { environment } from '../../environment/environment';
 import { useQuery } from 'react-query';
@@ -8,15 +11,24 @@ import { useAuthRepository } from '../../hooks/useAuthRepository';
 const LOCAL_STORAGE_AUTH_TOKEN = localStorage.getItem(
   environment.localStorageKeys.auth
 );
-export const AUTH_CONTEXT = createContext<Credential | null>(null);
+
+const initAuthValue: NullAuthCredential = {
+  email: null,
+  role: null,
+  token: null,
+};
+
+export const AUTH_CONTEXT = createContext<AuthCredential | NullAuthCredential>(
+  initAuthValue
+);
 export const AUTH_CONTEXT_DISPATCHER = createContext<Dispatch<Action> | null>(
   null
 );
 
 const dispatcher = (
-  state: AuthCredential | null,
+  state: AuthCredential | NullAuthCredential,
   action: Action
-): AuthCredential | null => {
+): AuthCredential | NullAuthCredential => {
   const currentState = { ...state } as AuthCredential;
 
   switch (action.type) {
@@ -31,7 +43,7 @@ const dispatcher = (
 
     case AuthActionType.DISCONNECT:
       localStorage.removeItem(environment.localStorageKeys.auth);
-      return null;
+      return { ...initAuthValue };
 
     case AuthActionType.EDIT:
       if (!action.credential)
@@ -39,7 +51,7 @@ const dispatcher = (
       return { ...currentState, ...action.credential };
 
     default:
-      return null;
+      return currentState;
   }
 };
 
@@ -51,7 +63,7 @@ export const AuthContextProvider: FC<AuthContextProviderProps> = ({
     auth.userCredential(LOCAL_STORAGE_AUTH_TOKEN)
   );
 
-  const [state, dispatch] = useReducer(dispatcher, data ?? null);
+  const [state, dispatch] = useReducer(dispatcher, data ?? initAuthValue);
 
   if (data && !state)
     dispatch({

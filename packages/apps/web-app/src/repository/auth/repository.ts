@@ -14,6 +14,12 @@ export interface AuthCredential extends Credential {
   token: string;
 }
 
+export interface NullAuthCredential {
+  email: null;
+  role: null;
+  token: null;
+}
+
 export interface AuthRepository {
   register: (email: string, password: string) => Promise<AuthCredential>;
   connect: (email: string, password: string) => Promise<AuthCredential>;
