@@ -1,3 +1,10 @@
+# Les fonctionnalités
+
+Toutes les routes sont testables sur le [postman](https://app.getpostman.com/join-team?invite_code=19e2e26b86170310c5dc5a1431c86f73&target_code=c996b5c4c53091416502a6980a5be20d).
+
+Elle ne sont pas toutes intégrer sur le front, dégouter de pas avoir eu le temps de finir.
+Pour les produit j'utilise un local-repository, car on ne peux pas ajouter de produit via le front pour le moment.
+
 # EcommerceApps
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
