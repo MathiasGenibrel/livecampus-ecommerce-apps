@@ -4,8 +4,12 @@ import { joiResolver } from '@hookform/resolvers/joi';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { Button, TextInputField } from 'evergreen-ui';
+
+import { TextInputField, toaster } from 'evergreen-ui';
 import { Headers } from '../components/Header/Headers';
+import { ConnectionCredential } from '../types/connection-credential';
+import { FormButton } from '../components/atoms/FormButton/FormButton';
+import { useLogin } from '../hooks/useLogin';
 
 const schema = Joi.object({
   email: Joi.string().email({ tlds: false }).required(),
@@ -13,6 +17,7 @@ const schema = Joi.object({
 });
 
 export const Login = () => {
+  const { mutate, isLoading, isError, isSuccess } = useLogin();
   const {
     register,
     handleSubmit,
@@ -21,12 +26,20 @@ export const Login = () => {
     resolver: joiResolver(schema),
   });
 
-  const submitHandler: SubmitHandler<any> = (data, event) => {
+  const submitHandler: SubmitHandler<any> = (
+    data: ConnectionCredential,
+    event
+  ) => {
     if (!event) throw new ReferenceError('Event is undefined');
     event.preventDefault();
 
-    console.log('[DATA]: ', data);
+    mutate({ ...data });
+    toaster.notify('Connection in progress', { duration: 1 });
   };
+
+  if (isError)
+    toaster.danger('An error occurred, try again later', { duration: 2 });
+  if (isSuccess) toaster.success('You have been connected', { duration: 1.5 });
 
   return (
     <>
@@ -52,9 +65,7 @@ export const Login = () => {
             hint={errors.password?.message as ReactNode}
             isInvalid={!!errors.password}
           />
-          <Button className="w-full" appearance="primary">
-            Login
-          </Button>
+          <FormButton isLoading={isLoading}>Login</FormButton>
           <span className="flex text-xs text-gray-500 justify-center p-2 gap-2">
             You do not have an account ?
             <Link className="font-medium text-blue-500" to={'/register'}>

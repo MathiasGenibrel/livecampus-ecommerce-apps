@@ -4,6 +4,7 @@ import { Pill } from 'evergreen-ui';
 import { useContext } from 'react';
 import { CART_CONTEXT } from '../../contexts/cart/cart-context';
 import { State } from '../../contexts/cart/cart-types';
+import { AUTH_CONTEXT } from '../../contexts/auth/auth-context';
 
 const getCartProductQuantity = (cart: State): string => {
   const cartProductQuantity = [...cart.values()]
@@ -17,6 +18,7 @@ const getCartProductQuantity = (cart: State): string => {
 
 export const Headers = () => {
   const cart = useContext(CART_CONTEXT);
+  const auth = useContext(AUTH_CONTEXT);
 
   const quantity = cart.size && getCartProductQuantity(cart);
 
@@ -35,7 +37,8 @@ export const Headers = () => {
         <h1 className="text-3xl font-medium">LOGO</h1>
       </Link>
       <section className="flex justify-between items-center gap-4">
-        <Link to={'/login'}>
+        <Link to={'/login'} className={'flex items-center gap-2'}>
+          {auth && <span className="text-xs text-gray-500">{auth.email}</span>}
           <PersonCircle className="text-xl" />
         </Link>
         <Link to={'/cart'} className={'relative'}>

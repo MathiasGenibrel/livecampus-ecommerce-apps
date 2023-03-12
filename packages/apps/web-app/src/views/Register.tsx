@@ -3,9 +3,12 @@ import Joi from 'joi';
 import { joiResolver } from '@hookform/resolvers/joi';
 
 import { Headers } from '../components/Header/Headers';
-import { Button, TextInputField } from 'evergreen-ui';
+import { TextInputField, toaster } from 'evergreen-ui';
 import { Link } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { ConnectionCredential } from '../types/connection-credential';
+import { FormButton } from '../components/atoms/FormButton/FormButton';
+import { useRegister } from '../hooks/useRegister';
 
 const schema = Joi.object({
   email: Joi.string().email({ tlds: false }).required(),
@@ -16,6 +19,7 @@ const schema = Joi.object({
 });
 
 export const Register = () => {
+  const { mutate, isLoading, isError, isSuccess } = useRegister();
   const {
     register,
     handleSubmit,
@@ -24,12 +28,20 @@ export const Register = () => {
     resolver: joiResolver(schema),
   });
 
-  const submitHandler: SubmitHandler<any> = (data, event) => {
+  const submitHandler: SubmitHandler<any> = (
+    data: ConnectionCredential,
+    event
+  ) => {
     if (!event) throw new ReferenceError('Event is undefined');
     event.preventDefault();
 
-    console.log('[DATA]: ', data);
+    mutate({ ...data });
+    toaster.notify('Creation of your account !', { duration: 1 });
   };
+
+  if (isError)
+    toaster.danger('An error occurred, try again later', { duration: 2 });
+  if (isSuccess) toaster.success('You have been connected', { duration: 1.5 });
 
   return (
     <>
@@ -67,9 +79,7 @@ export const Register = () => {
             isInvalid={!!errors.confirmPassword}
           />
 
-          <Button type="submit" className="w-full mt-4" appearance="primary">
-            Create account
-          </Button>
+          <FormButton isLoading={isLoading}>Create account</FormButton>
         </form>
 
         <span className="flex text-xs text-gray-500 justify-center p-2 gap-2">
